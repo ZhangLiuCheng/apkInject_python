@@ -137,7 +137,8 @@ def modify_application_class(application_path):
             if flag:
                 count += 1
             if count >= 6:
-                file_data += "\n    invoke-static {p0}, Lcom/playin/hook/AudioHook;->init(Landroid/content/Context;)V\n"
+                inject_str = "    invoke-static {p0}, Lcom/playin/hook/AudioHook;->init(Landroid/app/Application;)V"
+                file_data += "\n" + inject_str + "\n"
                 flag = False
                 count = 0
             file_data += line
@@ -194,5 +195,6 @@ def main():
         new_apk_path = apktool_b(apk_file_path)
         new_apk_path = sign_apk(new_apk_path)
         print("[inject] 签名成功，路径为: " + new_apk_path)
+
 
 main()
