@@ -82,6 +82,15 @@ def apktool_d(apk_path):
     return file_path
 
 
+# 拷贝smali文件到apk里面
+def copy_smali_apk(apk_file_path):
+    temp_path = os.getcwd() + "/../temp"
+    src_smali = temp_path + "/outputSmali/*"
+    apk_smali = apk_file_path + "/smali"
+    os.system("cp -r " + src_smali + " " + apk_smali)
+    print("[inject] 拷贝注入的smali到目标apk里面")
+
+
 # 获取application对应的文件
 def get_app_class(apk_file_path):
     manifest = apk_file_path + "/AndroidManifest.xml";
@@ -99,17 +108,70 @@ def get_app_class(apk_file_path):
     return None
 
 
-# 拷贝smali文件到apk里面
-def copy_smali_apk(apk_file_path):
+# 查找application所在路径
+def find_application_path(apk_file_path, app_class_name):
+    print("[inject] 开始查找Application所在路径")
+    ps = app_class_name.split('.')
+    app_smali_path = apk_file_path + "/smali"
+    for p in ps:
+        app_smali_path += "/" + p
+    app_smali_path += ".smali"
+    if os.path.exists(app_smali_path):
+        print("[inject] 查找Application成功，路径为 " + app_smali_path)
+        return app_smali_path
+    else:
+        print("[inject] 查找Application失败，请人工核实")
+        return None
+
+
+# 修改application,里面调用注入的方法
+def modify_application_class(application_path):
+    print("[inject] Application onCreate里面方法添加方法调用")
+    file_data = ""
+    with open(application_path, "r", encoding="utf-8") as f:
+        flag = False
+        count = 0
+        for line in f:
+            if ".method public onCreate()V" in line:
+                flag = True
+            if flag:
+                count += 1
+            if count >= 6:
+                file_data += "\n    invoke-static {p0}, Lcom/playin/hook/AudioHook;->init(Landroid/content/Context;)V\n"
+                flag = False
+                count = 0
+            file_data += line
+    f.close()
+    with open(application_path, "w", encoding="utf-8") as f:
+        f.write(file_data)
+    f.close()
+
+
+# 用apktool打包apk
+def apktool_b(apk_file_path):
+    print("[inject] 使用apktool重新打包")
+    os.system('apktool b ' + apk_file_path)
+    fs = os.listdir(apk_file_path + "/dist")
+    for f in fs:
+        suffix = os.path.splitext(f)[1]
+        if ('.apk' == suffix):
+            return apk_file_path + "/dist/" + f
+        else:
+            return None
+
+
+# 给新生产的apk签名
+def sign_apk(apk_path):
+    print("[inject] 给apk重新签名")
     temp_path = os.getcwd() + "/../temp"
-    src_smali = temp_path + "/outputSmali/*"
-    apk_smali = apk_file_path + "/smali"
-    os.system("cp -r " + src_smali + " " + apk_smali)
-    print("[inject] 拷贝注入的smali到目标apk里面")
+    new_apk_path = temp_path + "/sign_" + time.strftime('%m%d') + ".apk "
+    cmd = "jarsigner -verbose -keystore playin.jks -signedjar " + new_apk_path + apk_path + " playin -storepass playin"
+    os.system(cmd)
+    return new_apk_path
 
 
 def main():
-    # create_temp_file()
+    create_temp_file()
     src_java_path()
     javac_class()
     dex_class()
@@ -122,15 +184,15 @@ def main():
         print("[inject] 根目录只能包含一个apk文件")
     else:
         apk_file_path = apktool_d(apks_path[0])
+        copy_smali_apk(apk_file_path)
         app_package_name = get_app_class(apk_file_path)
         print("[inject] 获取到Application对应的包名 " + app_package_name)
+        application_path = find_application_path(apk_file_path, app_package_name)
+        if application_path:
+            modify_application_class(application_path)
 
-        copy_smali_apk(apk_file_path)
-
-    # modifyApkPackage(apkFilePath, app.appPackage)
-    # modifyApkName(apkFilePath, app.appName)
-    # newApkPath = apktool_b(apkFilePath)
-    # signApk(newApkPath, app.appName)
-
+        new_apk_path = apktool_b(apk_file_path)
+        new_apk_path = sign_apk(new_apk_path)
+        print("[inject] 签名成功，路径为: " + new_apk_path)
 
 main()
