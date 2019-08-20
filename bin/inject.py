@@ -4,11 +4,12 @@ import xml.etree.ElementTree as ET
 import sys, os, time
 
 
-def check_command(result, message):
+def check_command(result):
     if result != 0:
-        print(message)
-        os.system("exit")
-
+        # os.system("pause")
+        print("!!!!!!!!!!!!   命令执行异常  !!!!!!!!!!!!!")
+        exit()
+        # os.system("exit 0")
 
 # 创建临时文件
 def create_temp_file():
@@ -27,7 +28,8 @@ def src_java_path():
     source_path = os.getcwd() + "/../temp/sources.txt"
     if os.path.exists(src_path):
         print("[inject] 查找src下所有Java文件，路径保存到 " + source_path)
-        os.system("find " + src_path + " -name *.java > " + source_path)
+        result = os.system("find " + src_path + " -name *.java > " + source_path)
+        check_command(result)
     else:
         print("[inject] 查找src文件失败，请在根目录src下放入需要注入的java代码")
 
@@ -38,21 +40,24 @@ def javac_class():
     output_class_file = os.getcwd() + "/../temp/outputClass"
     if (os.path.exists(output_class_file) == False):
         os.system("mkdir " + output_class_file)
-    os.system("javac -classpath android.jar @" + source_path + " -d " + output_class_file)
+    result = os.system("javac -classpath android.jar @" + source_path + " -d " + output_class_file)
+    check_command(result)
     print("[inject] 将sources.txt里面对应的java文件编译成class文件")
 
 
 # class转dex
 def dex_class():
     temp_path = os.getcwd() + "/../temp"
-    os.system("dx --dex --output=" + temp_path + "/apkInject.dex " + temp_path + "/outputClass")
+    result = os.system("dx --dex --output=" + temp_path + "/apkInject.dex " + temp_path + "/outputClass")
+    check_command(result)
     print("[inject] 将outputClass文件转成apkInject.dex")
 
 
 # dex转smali
 def smali_dex():
     temp_path = os.getcwd() + "/../temp"
-    os.system("java -jar baksmali.jar d  " + temp_path + "/apkInject.dex -o " + temp_path + "/outputSmali/")
+    result = os.system("java -jar baksmali.jar d  " + temp_path + "/apkInject.dex -o " + temp_path + "/outputSmali/")
+    check_command(result)
     print("[inject] 将apkInject.dex转成smali")
 
 
@@ -76,7 +81,8 @@ def apktool_d(apk_path):
     file_name = os.path.splitext(os.path.split(apk_path)[1])[0]
     file_path = os.path.split(apk_path)[0] + "/temp/" + file_name  # 反编译后的文件路径
     if False == os.path.exists(file_path):
-        os.system('apktool -f d ' + apk_path + " -o " + file_path)
+        result = os.system('apktool -f d ' + apk_path + " -o " + file_path)
+        check_command(result)
 
     print("[inject] 完成反编译apk 路径:", file_path)
     return file_path
@@ -87,7 +93,8 @@ def copy_smali_apk(apk_file_path):
     temp_path = os.getcwd() + "/../temp"
     src_smali = temp_path + "/outputSmali/*"
     apk_smali = apk_file_path + "/smali"
-    os.system("cp -r " + src_smali + " " + apk_smali)
+    result = os.system("cp -r " + src_smali + " " + apk_smali)
+    check_command(result)
     print("[inject] 拷贝注入的smali到目标apk里面")
 
 
@@ -128,7 +135,7 @@ def find_application_path(apk_file_path, app_class_name):
 def modify_application_class(application_path):
     print("[inject] Application onCreate里面方法添加方法调用")
     file_data = ""
-    with open(application_path, "r", encoding="utf-8") as f:
+    with open(application_path, "r") as f:
         flag = False
         count = 0
         for line in f:
@@ -143,7 +150,7 @@ def modify_application_class(application_path):
                 count = 0
             file_data += line
     f.close()
-    with open(application_path, "w", encoding="utf-8") as f:
+    with open(application_path, "w") as f:
         f.write(file_data)
     f.close()
 
@@ -167,7 +174,8 @@ def sign_apk(apk_path):
     temp_path = os.getcwd() + "/../temp"
     new_apk_path = temp_path + "/sign_" + time.strftime('%m%d') + ".apk "
     cmd = "jarsigner -verbose -keystore playin.jks -signedjar " + new_apk_path + apk_path + " playin -storepass playin"
-    os.system(cmd)
+    result = os.system(cmd)
+    check_command(result)
     return new_apk_path
 
 

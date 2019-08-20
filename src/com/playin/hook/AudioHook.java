@@ -1,11 +1,11 @@
 package com.playin.hook;
 
-import android.content.Context;
+import android.app.Application;
 
 public class AudioHook {
 
-    public static void init(Context context) {
-        Test test = new Test(context, "AudioHook Test");
+    public static void init(Application application) {
+        Test test = new Test(application.getApplicationContext(), "AudioHook Test");
         test.print();
     }
 }
