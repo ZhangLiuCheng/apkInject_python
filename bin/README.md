@@ -1,34 +1,59 @@
+#### 一. 运行环境配置
 
-一. 环境配置
-    java, apktool, dx, python
-    
-二. 注入流程
+​    **java**, **apktool**, **dx**, **python**
 
-    # 查找所有java文件
-    1. find . -name "*.java" > sources.txt
+#### 二. 注入流程说明
 
-    # java转class
-    2. mkdir outputClass
-    3. javac -classpath android.jar @sources.txt -d outputClass/
+1. 查找所有java文件
 
-    # class转dex
-    4. dx --dex --output=./apkInject.dex outputClass
+   `find . -name "*.java" > sources.txt`
 
-    # dex转smail
-    5. java -jar baksmali.jar d apkInject.dex -o outputSmail/
-    
-    # 反编译apk
-    6. apktool d xxx.apk
+2. java转class
 
-    # 拷贝outputSmail到反编译后的文件里，并且带哦用
-    7.
-    
-    # 打包apk 
-    8. apktool b xxx
-    
-    # 签名
-    9. jarsigner -verbose -keystore playin.jks -signedjar sign.apk playInDemo.apk playin -storepass playin
+   `javac -classpath android.jar @sources.txt -d outputClass/`
 
-三. 使用说明
+3. class转dex
+
+   `dx --dex --output=./apkInject.dex outputClass`
+
+4. dex转smail
+
+   `java -jar baksmali.jar d apkInject.dex -o outputSmail/`
+
+5. 反编译apk
+
+   `apktool d xxx.apk`
+
+6. 拷贝outputSmail到反编译后的文件里
+
+   `cp -r src_smali apk_smali`
+
+7. 源apk的smail里调用注入的方法
+
+   通过解析AndroidManifest.xml获取到Application所在的文件，然后在OnCreate里面注入 
+
+   ```
+       invoke-static {p0}, Lcom/playin/hook/AudioHook;->init(Landroid/app/Application;)V
+   ```
+
+8. 打包apk 
+
+   `apktool b xxx`
+
+9. apk签名
+
+   `jarsigner -verbose -keystore playin.jks -signedjar sign.apk playInDemo.apk playin -storepass playin`
+
+#### 三. 使用文档
+
+1. 将需要注入的代码拷贝到apkInject/src目录下面，在AudioHook.java init()里面调用你自己的方法
+
+   <!--Test.java 和 util 是测试用的，可以删除-->
+
+2. 将源apk拷贝的apkInject/ 目录下面
+
+3. 进入apkInject/bin目录里面执行python inject.py
+
+4. 注入完成，新apk将在temp/目录下面
 
 
