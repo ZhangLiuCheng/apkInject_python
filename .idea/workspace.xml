@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="01573903-15a2-447c-b951-366d5c0aa37a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/inject.py" beforeDir="false" afterPath="$PROJECT_DIR$/bin/inject.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,30 +12,18 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/apkInject$inject.coverage" NAME="inject Coverage Results" MODIFIED="1566355722191" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bin" />
+    <SUITE FILE_PATH="coverage/apkInject$inject.coverage" NAME="inject Coverage Results" MODIFIED="1566802094877" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/bin" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/bin/inject.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
-              <caret line="146" column="30" lean-forward="true" selection-start-line="146" selection-start-column="30" selection-end-line="146" selection-end-column="115" />
+            <state relative-caret-position="224">
+              <caret line="213" column="45" selection-start-line="213" selection-start-column="45" selection-end-line="213" selection-end-column="45" />
               <folding>
                 <element signature="e#34#68#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/bin/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="FIRST">
-              <first_editor relative-caret-position="-249">
-                <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-              </first_editor>
-              <second_editor />
             </state>
           </provider>
         </entry>
@@ -93,6 +82,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -105,11 +95,21 @@
               <item name="apkInject" type="462c0819:PsiDirectoryNode" />
               <item name="bin" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="apkInject" type="b2602c69:ProjectViewProjectNode" />
+              <item name="apkInject" type="462c0819:PsiDirectoryNode" />
+              <item name="temp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="apkInject" type="b2602c69:ProjectViewProjectNode" />
+              <item name="apkInject" type="462c0819:PsiDirectoryNode" />
+              <item name="temp" type="462c0819:PsiDirectoryNode" />
+              <item name="WordChamp" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -123,10 +123,11 @@
       <recent name="$PROJECT_DIR$/bin" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/bin" />
+      <recent name="$PROJECT_DIR$/temp/WordChamp" />
       <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/temp/HelixCrush/lib" />
+      <recent name="$PROJECT_DIR$/bin" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/demo" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -182,18 +183,19 @@
       <updated>1565846675438</updated>
       <workItem from="1565846678985" duration="26712000" />
       <workItem from="1566288799986" duration="8488000" />
-      <workItem from="1566352974106" duration="1757000" />
+      <workItem from="1566352974106" duration="1866000" />
+      <workItem from="1566452720850" duration="770000" />
+      <workItem from="1566525426198" duration="3423000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36957000" />
+    <option name="totallyTimeSpent" value="41259000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="737" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2197092" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22617124" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -207,7 +209,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32868218" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.19224806" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.19224806" />
       <window_info anchor="bottom" id="Python Console" order="12" weight="0.32868218" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -254,23 +256,23 @@
     <entry file="file://$PROJECT_DIR$/temp/tantanqiu/original/AndroidManifest.xml" />
     <entry file="file://$PROJECT_DIR$/temp/tantanqiu/original/META-INF/cztchannel_jufeng" />
     <entry file="file://$PROJECT_DIR$/temp/tantanqiu/AndroidManifest.xml" />
-    <entry file="file://$PROJECT_DIR$/bin/inject.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="146" column="30" lean-forward="true" selection-start-line="146" selection-start-column="30" selection-end-line="146" selection-end-column="115" />
-          <folding>
-            <element signature="e#34#68#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="-249">
-            <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+          <first_editor relative-caret-position="321">
+            <caret line="55" lean-forward="true" selection-start-line="55" selection-end-line="55" />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/inject.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="213" column="45" selection-start-line="213" selection-start-column="45" selection-end-line="213" selection-end-column="45" />
+          <folding>
+            <element signature="e#34#68#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -179,6 +179,16 @@ def sign_apk(apk_path):
     return new_apk_path
 
 
+def sign_apk_test(apk_path):
+    print("[inject] 给apk重新签名")
+    temp_path = os.getcwd() + "/../"
+    new_apk_path = temp_path + "/sign_" + time.strftime('%m%d') + ".apk "
+    cmd = "jarsigner -verbose -keystore playin.jks -signedjar " + new_apk_path + apk_path + " playin -storepass playin"
+    result = os.system(cmd)
+    check_command(result)
+    return new_apk_path
+
+
 def main():
     create_temp_file()
     src_java_path()
@@ -205,4 +215,19 @@ def main():
         print("[inject] 签名成功，路径为: " + new_apk_path)
 
 
-main()
+# main()
+
+
+def main2():
+    create_temp_file()
+    apks_path = apk_src_path()
+    apk_file_path = apktool_d(apks_path[0])
+
+    # apk_file_path = temp_path = os.getcwd() + "/../temp/battleDisc"
+    # new_apk_path = apktool_b(apk_file_path)
+    # new_apk_path = sign_apk(new_apk_path)
+
+    # sign_apk_test("../base.apk")
+
+
+main2()
