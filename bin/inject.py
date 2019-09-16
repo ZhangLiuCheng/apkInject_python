@@ -15,8 +15,9 @@ def check_command(result):
 def create_temp_file():
     temp_path = os.getcwd() + "/../temp"
     if os.path.exists(temp_path):
-        print("[inject] 清空temp文件夹")
-        os.system("rm -rf " + temp_path + "/*")
+        print("[inject] temp文件夹已存在")
+        # print("[inject] 清空temp文件夹")
+        # os.system("rm -rf " + temp_path + "/*")
     else:
         print("[inject] 创建temp文件夹")
         os.system("mkdir " + temp_path)
@@ -88,11 +89,46 @@ def apktool_d(apk_path):
     return file_path
 
 
+# 拷贝libs到apk里面
+def copy_libs_apk(apk_file_path):
+    temp_path = os.getcwd() + "/../temp"
+    result = os.system("cp -r " + "libs/armeabi-v7a/* " + apk_file_path + "/lib/armeabi-v7a")
+    # result = os.system("cp -r " + "libs/arm64-v8a/* " + apk_file_path + "/lib/arm64-v8a")
+
+    print("[inject] 拷贝libs到目标apk里面")
+
+    os.system("rm -rf " + apk_file_path + "/lib/armeabi")
+    os.system("rm -rf " + apk_file_path + "/lib/x86")
+    os.system("rm -rf " + apk_file_path + "/lib/x86_64")
+    os.system("rm -rf " + apk_file_path + "/lib/arm64-v8a")
+
+
 # 拷贝smali文件到apk里面
 def copy_smali_apk(apk_file_path):
+    # print(apk_file_path)
+    # c3 = apk_file_path + "/smali_classes4"
+    # print("------>  ", c3,  os.path.exists(c3))
+
     temp_path = os.getcwd() + "/../temp"
     src_smali = temp_path + "/outputSmali/*"
+
+    # 获取samli路径, python不熟悉又赶时间，这边直接面向过程写死代码，后期有时间在优化
     apk_smali = apk_file_path + "/smali"
+    c2 = apk_file_path + "/smali_classes2"
+    c3 = apk_file_path + "/smali_classes3"
+    c4 = apk_file_path + "/smali_classes4"
+    c5 = apk_file_path + "/smali_classes5"
+    if (os.path.exists(c2)):
+        apk_smali = c2
+    if (os.path.exists(c3)):
+        apk_smali = c3
+    if (os.path.exists(c4)):
+        apk_smali = c4
+    if (os.path.exists(c5)):
+        apk_smali = c5
+
+    print("[inject] 查找apk里samli路径为: " + apk_smali)
+
     result = os.system("cp -r " + src_smali + " " + apk_smali)
     check_command(result)
     print("[inject] 拷贝注入的smali到目标apk里面")
@@ -133,14 +169,18 @@ def find_application_path(apk_file_path, app_class_name):
 
 # 修改application,里面调用注入的方法
 def modify_application_class(application_path):
-    print("[inject] Application onCreate里面方法添加方法调用")
+    print("[inject] Application准备添加自定义方法调用")
+    injectResult = False
     file_data = ""
+    # 查找onCreate方法
     with open(application_path, "r") as f:
         flag = False
         count = 0
         for line in f:
             if ".method public onCreate()V" in line:
+                print("[inject] Application 定位到onCreate方法")
                 flag = True
+                injectResult = True
             if flag:
                 count += 1
             if count >= 6:
@@ -150,15 +190,49 @@ def modify_application_class(application_path):
                 count = 0
             file_data += line
     f.close()
-    with open(application_path, "w") as f:
-        f.write(file_data)
-    f.close()
+    if (injectResult):
+        with open(application_path, "w") as f:
+            f.write(file_data)
+        f.close()
+
+    file_data = ""
+    if (injectResult == False):
+        # 查找attachBaseContext方法
+        with open(application_path, "r") as f:
+            flag = False
+            count = 0
+            for line in f:
+                if ".method protected attachBaseContext(Landroid/content/Context;)V" in line:
+                    print("[inject] Application 定位到attachBaseContext方法")
+                    flag = True
+                    injectResult = True
+                if flag:
+                    count += 1
+                if count >= 4:
+                    inject_str = "    invoke-static {p0}, Lcom/playin/hook/AudioHook;->init(Landroid/app/Application;)V"
+                    file_data += "\n" + inject_str + "\n"
+                    flag = False
+                    count = 0
+                file_data += line
+        f.close()
+        if (injectResult):
+            with open(application_path, "w") as f:
+                f.write(file_data)
+            f.close()
+
+    if (injectResult):
+        print("[inject] Application 注入方法成功")
+    else:
+        print("[inject] Application 注入方法失败")
+        check_command(-1)
+
 
 
 # 用apktool打包apk
 def apktool_b(apk_file_path):
     print("[inject] 使用apktool重新打包")
-    os.system('apktool b ' + apk_file_path)
+    result = os.system('apktool b ' + apk_file_path)
+    check_command(result)
     fs = os.listdir(apk_file_path + "/dist")
     for f in fs:
         suffix = os.path.splitext(f)[1]
@@ -203,6 +277,7 @@ def main():
         print("[inject] 根目录只能包含一个apk文件")
     else:
         apk_file_path = apktool_d(apks_path[0])
+        copy_libs_apk(apk_file_path)
         copy_smali_apk(apk_file_path)
         app_package_name = get_app_class(apk_file_path)
         print("[inject] 获取到Application对应的包名 " + app_package_name)
@@ -215,7 +290,7 @@ def main():
         print("[inject] 签名成功，路径为: " + new_apk_path)
 
 
-# main()
+main()
 
 
 def main2():
@@ -223,11 +298,14 @@ def main2():
     apks_path = apk_src_path()
     apk_file_path = apktool_d(apks_path[0])
 
-    # apk_file_path = temp_path = os.getcwd() + "/../temp/battleDisc"
+    # apk_file_path = temp_path = os.getcwd() + "/../temp/helixjump"
     # new_apk_path = apktool_b(apk_file_path)
     # new_apk_path = sign_apk(new_apk_path)
-
+    #
     # sign_apk_test("../base.apk")
 
+    # copy_libs_apk(os.getcwd() + "/../temp/helixjump")
+    # copy_smali_apk(os.getcwd() + "/../temp/helixjump")
 
-main2()
+
+# main2()
