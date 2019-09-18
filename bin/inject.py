@@ -290,22 +290,20 @@ def main():
         print("[inject] 签名成功，路径为: " + new_apk_path)
 
 
-main()
+# main()
 
 
 def main2():
-    create_temp_file()
-    apks_path = apk_src_path()
-    apk_file_path = apktool_d(apks_path[0])
+    # create_temp_file()
+    # apks_path = apk_src_path()
+    # apk_file_path = apktool_d(apks_path[0])
 
-    # apk_file_path = temp_path = os.getcwd() + "/../temp/helixjump"
-    # new_apk_path = apktool_b(apk_file_path)
-    # new_apk_path = sign_apk(new_apk_path)
-    #
+    apk_file_path = temp_path = os.getcwd() + "/../temp/helixjump"
+    new_apk_path = apktool_b(apk_file_path)
+    new_apk_path = sign_apk(new_apk_path)
+
     # sign_apk_test("../base.apk")
 
-    # copy_libs_apk(os.getcwd() + "/../temp/helixjump")
-    # copy_smali_apk(os.getcwd() + "/../temp/helixjump")
 
 
-# main2()
+main2()

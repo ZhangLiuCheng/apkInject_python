@@ -16,7 +16,7 @@ public class FastHook implements FastHookCallback {
         Log.e(TAG, "FastHook:  -------> doHook  begin");
         String methodSig = "([BII)I";
         FastHookManager.doHook("android.media.AudioTrack", null, "write",
-                methodSig, this, FastHookManager.MODE_REWRITE, false);
+                methodSig, this, FastHookManager.MODE_REWRITE, true);
         Log.e(TAG, "FastHook:  -------> doHook   end");
     }
 
