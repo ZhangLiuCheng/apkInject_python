@@ -39,15 +39,15 @@ public class HookJava extends AudioTrack {
 
     @Override
     public int write(byte[] audioData, int offsetInBytes, int sizeInBytes) {
-//        Log.e("HookAudioTrack", "HookAudioTrack  write  111111  " + Arrays.toString(audioData));
-        SocketConnect.getInstance().sendData(audioData);
+        Log.e("HookAudioTrack", "HookAudioTrack  write  111111  ");
+        SocketConnect.getInstance().sendData(audioData, offsetInBytes, sizeInBytes);
         return super.write(audioData, offsetInBytes, sizeInBytes);
     }
 
     @Override
     public int write(byte[] audioData, int offsetInBytes, int sizeInBytes, int writeMode) {
-//        Log.e("HookAudioTrack", "HookAudioTrack  write  22222  "  + Arrays.toString(audioData));
-        SocketConnect.getInstance().sendData(audioData);
+        Log.e("HookAudioTrack", "HookAudioTrack  write  22222  " );
+//        SocketConnect.getInstance().sendData(audioData, offsetInBytes, sizeInBytes);
         return super.write(audioData, offsetInBytes, sizeInBytes, writeMode);
     }
 
