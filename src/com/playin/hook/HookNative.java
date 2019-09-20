@@ -1,39 +1,37 @@
-package com.playin.hook.util;
+package com.playin.hook;
 
 import android.util.Log;
-
-import java.util.Arrays;
 
 import pers.turing.technician.fasthook.FastHookCallback;
 import pers.turing.technician.fasthook.FastHookManager;
 import pers.turing.technician.fasthook.FastHookParam;
 
-public class FastHook implements FastHookCallback {
+public class HookNative implements FastHookCallback {
 
     private final static String TAG = "AUDIO_HOOK";
 
     public void doHook() {
-        Log.e(TAG, "FastHook:  -------> doHook  begin");
+        Log.e(TAG, "HookNative:  -------> doHook  begin");
         String methodSig = "([BII)I";
         FastHookManager.doHook("android.media.AudioTrack", null, "write",
                 methodSig, this, FastHookManager.MODE_REWRITE, true);
-        Log.e(TAG, "FastHook:  -------> doHook   end");
+        Log.e(TAG, "HookNative:  -------> doHook   end");
     }
 
     @Override
     public void beforeHookedMethod(FastHookParam param) {
-        Log.e(TAG, "FastHook:  -------> beforeHookedMethod");
+        Log.e(TAG, "HookNative:  -------> beforeHookedMethod");
     }
 
     @Override
     public void afterHookedMethod(FastHookParam param) {
-        Log.e(TAG, "FastHook:  -------> afterHookedMethod");
+        Log.e(TAG, "HookNative:  -------> afterHookedMethod");
 
         try {
             byte[] audioData = (byte[]) param.args[0];
             int offsetInBytes = (int) param.args[1];
             int sizeInBytes = (int) param.args[2];
-            Log.e(TAG, "AudioTrackHook:  " + Arrays.toString(audioData));
+//            Log.e(TAG, "AudioTrackHook:  " + Arrays.toString(audioData));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -7,10 +7,11 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.playin.hook.util.FastHook;
+import com.playin.util.SocketConnect;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 
@@ -21,24 +22,29 @@ public class AudioHook {
     private final static String TAG = "AUDIO_HOOK";
 
     public static void init(Application application) {
+        Log.e(TAG, "AudioHook     init   " + application);
 
-        Log.e(TAG, "AudioHook     init");
-
-        // apk
-        wayApk();
+//        // apk
+//        wayApk();
 
         // 注入
 //        wayInject(application.getBaseContext());
+
+        SocketConnect.getInstance().startServer();
+        File file = application.getExternalFilesDir("audio");
+        File f = new File(file, "test.pcm");
+        if (!f.exists()) {
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        SocketConnect.getInstance().setSaveFile(f);
     }
 
     private static void wayApk() {
-        new FastHook().doHook();
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                new FastHook().doHook();
-//            }
-//        }).start();
+        new HookNative().doHook();
     }
 
     private static void wayInject(final Context context) {
@@ -69,7 +75,7 @@ public class AudioHook {
         try {
             ClassLoader classLoader = context.getClassLoader();
             DexClassLoader dexClassLoader = new DexClassLoader(apkFile.getAbsolutePath(), context.getCodeCacheDir().getAbsolutePath(), null, classLoader);
-            Class<?> hookItem = Class.forName("com.playin.hook.util.FastHook", true, dexClassLoader);
+            Class<?> hookItem = Class.forName("com.playin.hook.HookNative", true, dexClassLoader);
             Object t = hookItem.newInstance();
             for (Method method : hookItem.getDeclaredMethods()) {
                 if (method.getName().contains("doHook")) {

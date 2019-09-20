@@ -208,7 +208,7 @@ def modify_application_class(application_path):
                     injectResult = True
                 if flag:
                     count += 1
-                if count >= 4:
+                if count >= 7:
                     inject_str = "    invoke-static {p0}, Lcom/playin/hook/AudioHook;->init(Landroid/app/Application;)V"
                     file_data += "\n" + inject_str + "\n"
                     flag = False
@@ -263,6 +263,14 @@ def sign_apk_test(apk_path):
     return new_apk_path
 
 
+def modify_hook_java(apk_file_path):
+    print("[inject] 修改hook java音频代码 " + apk_file_path)
+    # sed -i '' 's/Lcom\/playin\/hook\/HookJava;/Landroid\/media\/AudioTrack;/g' `grep 'Lcom\/playin\/hook\/HookJava;' -rl temp/drawit --include 'FMODAudioDevice.smali'`
+    # result = os.system("sed -i '' 's/Landroid\/media\/AudioTrack;/Lcom\/playin\/hook\/HookJava;/g' `grep 'Landroid/media/AudioTrack;' -rl ../temp/drawit --include 'FMODAudioDevice.smali'`")
+    result = os.system("sed -i '' 's/Landroid\/media\/AudioTrack;/Lcom\/playin\/hook\/HookJava;/g' `grep 'Landroid/media/AudioTrack;' -rl " + apk_file_path + " --include 'FMODAudioDevice.smali'`")
+    check_command(result)
+
+
 def main():
     create_temp_file()
     src_java_path()
@@ -279,6 +287,9 @@ def main():
         apk_file_path = apktool_d(apks_path[0])
         copy_libs_apk(apk_file_path)
         copy_smali_apk(apk_file_path)
+
+        modify_hook_java(apk_file_path)
+
         app_package_name = get_app_class(apk_file_path)
         print("[inject] 获取到Application对应的包名 " + app_package_name)
         application_path = find_application_path(apk_file_path, app_package_name)
@@ -290,7 +301,7 @@ def main():
         print("[inject] 签名成功，路径为: " + new_apk_path)
 
 
-# main()
+main()
 
 
 def main2():
@@ -298,7 +309,7 @@ def main2():
     # apks_path = apk_src_path()
     # apk_file_path = apktool_d(apks_path[0])
 
-    apk_file_path = temp_path = os.getcwd() + "/../temp/helixjump"
+    apk_file_path = temp_path = os.getcwd() + "/../temp/drawit"
     new_apk_path = apktool_b(apk_file_path)
     new_apk_path = sign_apk(new_apk_path)
 
@@ -306,4 +317,4 @@ def main2():
 
 
 
-main2()
+# main2()
