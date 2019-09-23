@@ -31,16 +31,17 @@ public class AudioHook {
 //        wayInject(application.getBaseContext());
 
         SocketConnect.getInstance().startServer();
-        File file = application.getExternalFilesDir("audio");
-        File f = new File(file, "test.pcm");
-        if (!f.exists()) {
-            try {
-                f.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        SocketConnect.getInstance().setSaveFile(f);
+
+//        File file = application.getExternalFilesDir("audio");
+//        File f = new File(file, "helix_crush.pcm");
+//        if (!f.exists()) {
+//            try {
+//                f.createNewFile();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        SocketConnect.getInstance().setSaveFile(f);
     }
 
     private static void wayApk() {

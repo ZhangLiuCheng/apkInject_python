@@ -265,9 +265,8 @@ def sign_apk_test(apk_path):
 
 def modify_hook_java(apk_file_path):
     print("[inject] 修改hook java音频代码 " + apk_file_path)
-    # sed -i '' 's/Lcom\/playin\/hook\/HookJava;/Landroid\/media\/AudioTrack;/g' `grep 'Lcom\/playin\/hook\/HookJava;' -rl temp/drawit --include 'FMODAudioDevice.smali'`
-    # result = os.system("sed -i '' 's/Landroid\/media\/AudioTrack;/Lcom\/playin\/hook\/HookJava;/g' `grep 'Landroid/media/AudioTrack;' -rl ../temp/drawit --include 'FMODAudioDevice.smali'`")
-    result = os.system("sed -i '' 's/Landroid\/media\/AudioTrack;/Lcom\/playin\/hook\/HookJava;/g' `grep 'Landroid/media/AudioTrack;' -rl " + apk_file_path + " --include 'FMODAudioDevice.smali'`")
+    # result = os.system("sed -i '' 's/Landroid\/media\/AudioTrack;/Lcom\/playin\/hook\/HookJava;/g' `grep 'Landroid/media/AudioTrack;' -rl " + apk_file_path + " --include 'FMODAudioDevice.smali'`")
+    result = os.system("sed -i '' 's/Landroid\/media\/AudioTrack;/Lcom\/playin\/hook\/HookJava;/g' `grep 'Landroid/media/AudioTrack;' -rl " + apk_file_path + " --exclude 'HookJava.smali'`")
     check_command(result)
 
 
