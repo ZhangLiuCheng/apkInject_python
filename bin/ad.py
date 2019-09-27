@@ -83,7 +83,7 @@ def exec_cmd(cmd):
 
 
 def insert_log(apk_file_path, file_name, message):
-    print("[inject_ad] 插入自定义打印语句")
+    print("[inject_ad] " + file_name + "插入自定义打印语句")
 
     log_str = '''\n\n.method public static playInLog()V
     .registers 2
@@ -114,15 +114,11 @@ def ad_ironsource(apk_file_path):
     log_str = "invoke-static {}, Lcom\/ironsource\/mediationsdk\/IronSource;->playInLog()V"
 
     insert_log(apk_file_path, file_name, "IronSource   ---->  广告已被拦截")
-
     print("[inject_ad] IronSource广告拦截" + apk_file_path)
-
     command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
-    print("command_str =======>  " + command_str)
-    print("[inject_ad] IronSource初始化方法替换成打印方法")
-
     result = os.system(command_str)
     check_command(result)
+    print("[inject_ad] IronSource初始化方法替换成打印方法")
 
 
 def main():
