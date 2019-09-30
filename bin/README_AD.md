@@ -59,3 +59,19 @@
 ​		AdRegistration.setAppKey("0123456789ABCDEF0123456789ABCDEF");
 
 > https://developer.amazon.com/zh/docs/mobile-ads/mb-quick-start.html
+
+
+
+#### 8.Chartboost
+
+​		Chartboost.startWithAppId(this, appId, appSignature);
+
+> https://answers.chartboost.com/en-us/child_article/android
+
+
+
+### 9.mintegral
+
+​		MIntegralSDK.init(map, this);
+
+> http://cdn-adn.rayjump.com/cdn-adn/v2/markdown_v2/index.html?file=sdk-m_sdk-android&lang=en

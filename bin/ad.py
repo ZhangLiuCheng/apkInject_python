@@ -99,7 +99,8 @@ def insert_log(apk_file_path, file_name, message):
     return-void
 .end method''' % (message)
 
-    command_str = "find %s -name %s" % (apk_file_path, file_name)
+    command_str = "find %s %s" % (apk_file_path, file_name)
+    print(command_str)
     dest_path = exec_cmd(command_str)
     if (os.path.exists(dest_path) == True):
         fp = open(dest_path, 'a')
@@ -114,10 +115,11 @@ def insert_log(apk_file_path, file_name, message):
 # IronSource 广告拦截
 def ad_ironsource(apk_file_path):
     file_name = "IronSource.smali"
-    init_str = "invoke-virtual {v0, p0, p1, v1, p2}, Lcom\/ironsource\/mediationsdk\/IronSourceObject;->init(Landroid\/app\/Activity;Ljava\/lang\/String;Z\[Lcom\/ironsource\/mediationsdk\/IronSource$AD_UNIT;)V"
-    log_str = "invoke-static {}, Lcom\/ironsource\/mediationsdk\/IronSource;->playInLog()V"
+    find_command_str = " -name " + file_name
+    init_str = ".method public static varargs init(Landroid\/app\/Activity;Ljava\/lang\/String;\[Lcom\/ironsource\/mediationsdk\/IronSource$AD_UNIT;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/ironsource\/mediationsdk\/IronSource;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
-    insert_result = insert_log(apk_file_path, file_name, "IronSource   ---->  广告已被拦截")
+    insert_result = insert_log(apk_file_path, find_command_str, "IronSource   ---->  广告已被拦截")
     if (insert_result == True):
         print("[inject_ad] IronSource广告拦截" + apk_file_path)
         command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
@@ -131,10 +133,11 @@ def ad_ironsource(apk_file_path):
 # Facebook 广告拦截
 def ad_facebook(apk_file_path):
     file_name = "FacebookSdk.smali"
+    find_command_str = " -name " + file_name
     init_str = "sput-object v0, Lcom\/facebook\/FacebookSdk;->sdkFullyInitialized:Ljava\/lang\/Boolean;"
     log_str = "invoke-static {}, Lcom\/facebook\/FacebookSdk;->playInLog()V"
 
-    insert_result = insert_log(apk_file_path, file_name, "FacebookSdk   ---->  广告已被拦截")
+    insert_result = insert_log(apk_file_path, find_command_str, "FacebookSdk   ---->  广告已被拦截")
     if (insert_result == True):
         print("[inject_ad] FacebookSdk广告拦截" + apk_file_path)
         command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
@@ -148,10 +151,11 @@ def ad_facebook(apk_file_path):
 # MoPub 广告拦截
 def ad_mopub(apk_file_path):
     file_name = "MoPub.smali"
+    find_command_str = " -name " + file_name
     init_str = "invoke-virtual {p2, p0, v0, v1, p1}, Lcom\/mopub\/common\/AdapterConfigurationManager;->initialize(Landroid\/content\/Context;Ljava\/util\/Set;Ljava\/util\/Map;Ljava\/util\/Map;)V"
     log_str = "invoke-static {}, Lcom\/mopub\/common\/MoPub;->playInLog()V"
 
-    insert_result = insert_log(apk_file_path, file_name, "MoPub   ---->  广告已被拦截")
+    insert_result = insert_log(apk_file_path, find_command_str, "MoPub   ---->  广告已被拦截")
     if (insert_result == True):
         print("[inject_ad] MoPub广告拦截" + apk_file_path)
         command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
@@ -165,10 +169,11 @@ def ad_mopub(apk_file_path):
 # Vungle 广告拦截
 def ad_vungle(apk_file_path):
     file_name = "Vungle.smali"
+    find_command_str = " -name " + file_name
     init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/VungleSettings;)V"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/vungle\/warren\/Vungle;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
-    insert_result = insert_log(apk_file_path, file_name, "Vungle   ---->  广告已被拦截")
+    insert_result = insert_log(apk_file_path, find_command_str, "Vungle   ---->  广告已被拦截")
     if (insert_result == True):
         print("[inject_ad] Vungle广告拦截" + apk_file_path)
         command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
@@ -182,10 +187,11 @@ def ad_vungle(apk_file_path):
 # AppLovin 广告拦截
 def ad_appLovin(apk_file_path):
     file_name = "AppLovinSdk.smali"
+    find_command_str = " -name " + file_name
     init_str = ".method public static initializeSdk(Landroid\/content\/Context;Lcom\/applovin\/sdk\/AppLovinSdk$SdkInitializationListener;)V"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
-    insert_result = insert_log(apk_file_path, file_name, "Vungle   ---->  广告已被拦截")
+    insert_result = insert_log(apk_file_path, find_command_str, "Vungle   ---->  广告已被拦截")
     if (insert_result == True):
         print("[inject_ad] AppLovin广告拦截" + apk_file_path)
         command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
@@ -199,10 +205,11 @@ def ad_appLovin(apk_file_path):
 # Admob 广告拦截
 def ad_admob(apk_file_path):
     file_name = "MobileAds.smali"
+    find_command_str = " -name " + file_name
     init_str = ".method public static initialize(Landroid\/content\/Context;Ljava\/lang\/String;Lcom\/google\/android\/gms\/ads\/MobileAds$Settings;)V"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/google\/android\/gms\/ads\/MobileAds;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
-    insert_result = insert_log(apk_file_path, file_name, "Admob   ---->  广告已被拦截")
+    insert_result = insert_log(apk_file_path, find_command_str, "Admob   ---->  广告已被拦截")
     if (insert_result == True):
         print("[inject_ad] Admob广告拦截" + apk_file_path)
         command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
@@ -216,10 +223,11 @@ def ad_admob(apk_file_path):
 # Amazon 广告拦截
 def ad_amazon(apk_file_path):
     file_name = "AdRegistration.smali"
+    find_command_str = " -name " + file_name
     init_str = ".method public static final setAppKey(Ljava\/lang\/String;)V"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/amazon\/device\/ads\/AdRegistration;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
-    insert_result = insert_log(apk_file_path, file_name, "Amazon   ---->  广告已被拦截")
+    insert_result = insert_log(apk_file_path,find_command_str , "Amazon   ---->  广告已被拦截")
     if (insert_result == True):
         print("[inject_ad] Amazon广告拦截" + apk_file_path)
         command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
@@ -228,6 +236,42 @@ def ad_amazon(apk_file_path):
         print("[inject_ad] Amazon初始化方法替换成打印方法")
     else:
         print("[inject_ad] AdRegistration.smail文件不存在")
+
+
+# Chartboost 广告拦截
+def ad_chartboost(apk_file_path):
+    file_name = "Chartboost.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public static startWithAppId(Landroid\/app\/Activity;Ljava\/lang\/String;Ljava\/lang\/String;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/chartboost\/sdk\/Chartboost;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+
+    insert_result = insert_log(apk_file_path, find_command_str, "Chartboost   ---->  广告已被拦截")
+    if (insert_result == True):
+        print("[inject_ad] Chartboost广告拦截" + apk_file_path)
+        command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
+        result = os.system(command_str)
+        check_command(result)
+        print("[inject_ad] Chartboost初始化方法替换成打印方法")
+    else:
+        print("[inject_ad] Chartboost.smail文件不存在")
+
+
+# Mintegral 广告拦截
+def ad_mintegra(apk_file_path):
+    file_name = 'a.smali'
+    find_command_str = ' -path "*/com/mintegral/msdk/system*"  -name ' + file_name
+    init_str = ".method public final a(Landroid\/content\/Context;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mintegral\/msdk\/system\/a;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+
+    insert_result = insert_log(apk_file_path, find_command_str, "Mintegral   ---->  广告已被拦截")
+    if (insert_result == True):
+        print("[inject_ad] Mintegral广告拦截" + apk_file_path)
+        command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
+        result = os.system(command_str)
+        check_command(result)
+        print("[inject_ad] Mintegral初始化方法替换成打印方法")
+    else:
+        print("[inject_ad] Mintegral初始化方法替换失败, a.smail文件不存在")
 
 
 def main():
@@ -248,6 +292,8 @@ def main():
         ad_appLovin(apk_file_path)
         ad_admob(apk_file_path)
         ad_amazon(apk_file_path)
+        ad_chartboost(apk_file_path)
+        ad_mintegra(apk_file_path)
 
         new_apk_path = apktool_b(apk_file_path)
         new_apk_path = sign_apk(new_apk_path)
