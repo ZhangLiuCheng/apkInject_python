@@ -260,8 +260,8 @@ def ad_chartboost(apk_file_path):
 def ad_mintegra(apk_file_path):
     file_name = 'a.smali'
     find_command_str = ' -path "*/com/mintegral/msdk/system*"  -name ' + file_name
-    init_str = ".method public final a(Landroid\/content\/Context;)V"
-    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mintegral\/msdk\/system\/a;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mintegral\/msdk\/system\/a;->playInLog()V" + "\\\n"
 
     insert_result = insert_log(apk_file_path, find_command_str, "Mintegral   ---->  广告已被拦截")
     if (insert_result == True):

@@ -300,7 +300,7 @@ def main():
         print("[inject] 签名成功，路径为: " + new_apk_path)
 
 
-main()
+# main()
 
 
 def main2():
@@ -308,7 +308,7 @@ def main2():
     # apks_path = apk_src_path()
     # apk_file_path = apktool_d(apks_path[0])
 
-    apk_file_path = temp_path = os.getcwd() + "/../temp/drawit"
+    apk_file_path = temp_path = os.getcwd() + "/../temp/BH3_modify"
     new_apk_path = apktool_b(apk_file_path)
     new_apk_path = sign_apk(new_apk_path)
 
@@ -316,4 +316,4 @@ def main2():
 
 
 
-# main2()
+main2()
