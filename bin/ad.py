@@ -106,7 +106,7 @@ def insert_log(apk_file_path, file_name, message):
         fp = open(dest_path, 'a')
         fp.write(log_str)
         fp.close()
-        print("[inject_ad] " + file_name + "插入自定义打印语句")
+        print("[inject_ad] 插入自定义打印语句  " + dest_path)
         return True
     else:
         return False
@@ -134,12 +134,13 @@ def ad_ironsource(apk_file_path):
 def ad_facebook(apk_file_path):
     file_name = "FacebookSdk.smali"
     find_command_str = " -name " + file_name
-    init_str = "sput-object v0, Lcom\/facebook\/FacebookSdk;->sdkFullyInitialized:Ljava\/lang\/Boolean;"
-    log_str = "invoke-static {}, Lcom\/facebook\/FacebookSdk;->playInLog()V"
+    init_str = ".method public static declared-synchronized sdkInitialize(Landroid\/content\/Context;Lcom\/facebook\/FacebookSdk$InitializeCallback;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/facebook\/FacebookSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+
 
     insert_result = insert_log(apk_file_path, find_command_str, "FacebookSdk   ---->  广告已被拦截")
     if (insert_result == True):
-        print("[inject_ad] FacebookSdk广告拦截" + apk_file_path)
+        print("[inject_ad] FacebookSdk广告拦截 " + apk_file_path)
         command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
         result = os.system(command_str)
         check_command(result)
@@ -170,7 +171,8 @@ def ad_mopub(apk_file_path):
 def ad_vungle(apk_file_path):
     file_name = "Vungle.smali"
     find_command_str = " -name " + file_name
-    init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/VungleSettings;)V"
+    # init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/VungleSettings;)V"
+    init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/PublisherDirectDownload;)V"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/vungle\/warren\/Vungle;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
     insert_result = insert_log(apk_file_path, find_command_str, "Vungle   ---->  广告已被拦截")
@@ -289,6 +291,7 @@ def main():
         ad_facebook(apk_file_path)
         ad_mopub(apk_file_path)
         ad_vungle(apk_file_path)
+
         ad_appLovin(apk_file_path)
         ad_admob(apk_file_path)
         ad_amazon(apk_file_path)
