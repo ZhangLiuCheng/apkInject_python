@@ -112,6 +112,38 @@ def insert_log(apk_file_path, file_name, message):
         return False
 
 
+# Unity 广告拦截
+def ad_unity(apk_file_path):
+    file_name = 'UnityAds.smali'
+    find_command_str = " -name " + file_name
+    insert_result = insert_log(apk_file_path, find_command_str, "UnityAds   ---->  广告已被拦截")
+    print("[inject_ad] UnityAds广告拦截" + apk_file_path)
+    print_str = "\\\n\\\t" + "invoke-static {}, Lcom\/unity3d\/ads\/UnityAds;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+
+    if (insert_result == True):
+        init_str1 = ".method public static initialize(Landroid\/app\/Activity;Ljava\/lang\/String;Lcom\/unity3d\/ads\/IUnityAdsListener;Z)V"
+        log_str1 = init_str1 + print_str
+        command_str1 = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str1, log_str1, init_str1, apk_file_path, file_name)
+        result1 = os.system(command_str1)
+        check_command(result1)
+
+        init_str2 = ".method public static show(Landroid\/app\/Activity;)V"
+        log_str2 = init_str2 + print_str
+        command_str2 = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str2, log_str2, init_str2, apk_file_path, file_name)
+        result2 = os.system(command_str2)
+        check_command(result2)
+
+        init_str3 = ".method public static show(Landroid\/app\/Activity;Ljava\/lang\/String;)V"
+        log_str3 = init_str3 + print_str
+        command_str3 = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str3, log_str3, init_str3, apk_file_path, file_name)
+        result3 = os.system(command_str3)
+        check_command(result3)
+
+        print("[inject_ad] UnityAds初始化方法替换成打印方法")
+    else:
+        print("[inject_ad] UnityAds初始化方法替换失败, UnityAds.smail文件不存在")
+
+
 # IronSource 广告拦截
 def ad_ironsource(apk_file_path):
     file_name = "IronSource.smali"
@@ -260,9 +292,22 @@ def ad_chartboost(apk_file_path):
 
 # Mintegral 广告拦截
 def ad_mintegra(apk_file_path):
+    #修改Manifest
+    manifest = apk_file_path + "/AndroidManifest.xml"
+    command_str = "sed -i '' 's/MTGRewardVideoActivity/MTGRewardVideoActivity_temp/g' " + manifest
+    result = os.system(command_str)
+    check_command(result)
+
+
     file_name = 'a.smali'
     find_command_str = ' -path "*/com/mintegral/msdk/system*"  -name ' + file_name
-    init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+
+    # 方法1
+    # init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+
+    # 方法2
+    init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mintegral\/msdk\/system\/a;->playInLog()V" + "\\\n"
 
     insert_result = insert_log(apk_file_path, find_command_str, "Mintegral   ---->  广告已被拦截")
@@ -287,11 +332,11 @@ def main():
     else:
         apk_file_path = apktool_d(apks_path[0])
 
+        ad_unity(apk_file_path)
         ad_ironsource(apk_file_path)
         ad_facebook(apk_file_path)
         ad_mopub(apk_file_path)
         ad_vungle(apk_file_path)
-
         ad_appLovin(apk_file_path)
         ad_admob(apk_file_path)
         ad_amazon(apk_file_path)
@@ -304,3 +349,10 @@ def main():
 
 
 main()
+
+# (1)创五权分立原则，谋求“万能政府”; (2)倡导地方自治，提出均权制主张; (3)重视人才的培养与合理使用，强调人尽其才
+#
+# (1)行政组织应以经济职能为中心。 (2)行政组织必须进行改革。(改革是核心) (3)行政组织必须克服官僚主义，提高工作效率。 (4)行政组织必须加强法制建设。
+#
+# 邓小平关于行政组织必须加强法制建设的思想的内容:
+# (1)必须加强组织制度建设;(2)重视组织机构的编制立法; (3)主张建立严格的工作责任制; (4)强调必须建立科学的干部人事管理制度。

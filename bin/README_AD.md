@@ -75,3 +75,26 @@
 ​		MIntegralSDK.init(map, this);
 
 > http://cdn-adn.rayjump.com/cdn-adn/v2/markdown_v2/index.html?file=sdk-m_sdk-android&lang=en
+
+​		修改AndroidManifest里面MTGRewardVideoActivity，禁止奖励视频弹出
+
+### 10.UnityAds
+
+​		UnityAds.
+
+
+
+
+
+## 三.个别游戏手动修改
+
+### 1.Origame
+
+ 		PromotionActivity  onCreate添加
+
+```
+invoke-virtual {p0}, Lcom/ketchapp/promotion/PromotionActivity;->finish()V
+return-void
+```
+
+​		
