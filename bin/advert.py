@@ -86,11 +86,15 @@ def ad_ironsource(apk_file_path):
 
 # Facebook 广告拦截
 def ad_facebook(apk_file_path):
-    file_name = "FacebookSdk.smali"
-    find_command_str = " -name " + file_name
-    init_str = ".method public static declared-synchronized sdkInitialize(Landroid\/content\/Context;Lcom\/facebook\/FacebookSdk$InitializeCallback;)V"
-    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/facebook\/FacebookSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    # file_name = "FacebookSdk.smali"
+    # find_command_str = " -name " + file_name
+    # init_str = ".method public static declared-synchronized sdkInitialize(Landroid\/content\/Context;Lcom\/facebook\/FacebookSdk$InitializeCallback;)V"
+    # log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/facebook\/FacebookSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
+    file_name = "AudienceNetworkAds.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public static initialize(Landroid\/content\/Context;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/facebook\/ads\/AudienceNetworkAds;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
     insert_result = insert_log(apk_file_path, find_command_str, "FacebookSdk   ---->  广告已被拦截")
     if (insert_result == True):
@@ -101,6 +105,18 @@ def ad_facebook(apk_file_path):
         print("[inject_ad] FacebookSdk初始化方法替换成打印方法")
     else:
         print("[inject_ad] FacebookSdk.smail文件不存在")
+
+    # 拦截 Validate sdkInitialized 方法
+    # file_name1 = "Validate.smali"
+    # find_command_str1 = " -name " + file_name1
+    # init_str1 = ".method public static sdkInitialized()V"
+    # log_str1 = init_str1 + "\\\n\\\t" + "invoke-static {}, Lcom\/facebook\/internal\/Validate;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    # insert_result1 = insert_log(apk_file_path, find_command_str1, "FacebookSdk Validate.sdkInitialized  ---->  方法拦截")
+    # if (insert_result1 == True):
+    #     command_str1 = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str1, log_str1, init_str1, apk_file_path, file_name1)
+    #     # os.system(command_str1)
+    #     print("[inject_ad] FacebookSdk Validate.sdkInitialized方法 替换成打印方法")
+
 
 
 # MoPub 广告拦截
@@ -225,10 +241,10 @@ def ad_mintegra(apk_file_path):
     find_command_str = ' -path "*/com/mintegral/msdk/system*"  -name ' + file_name
 
     # 方法1
-    # init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
 
     # 方法2
-    init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    # init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
 
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mintegral\/msdk\/system\/a;->playInLog()V" + "\\\n"
 
