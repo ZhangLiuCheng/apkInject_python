@@ -156,22 +156,34 @@ def ad_vungle(apk_file_path):
         print("[inject_ad] Vungle.smail文件不存在")
 
 
+# 方法替换
+def ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, error_exit=True):
+    insert_result = insert_log(apk_file_path, find_command_str, file_name + "    ---->  广告已被拦截")
+    if insert_result:
+        command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str,
+                                                                                   apk_file_path, file_name)
+        result = os.system(command_str)
+        if error_exit:
+            tool.check_command(result)
+        print("[inject_ad] " + file_name + " 方法替换成功")
+    else:
+        print("[inject_ad] " + file_name + " 文件不存在")
+
+
 # AppLovin 广告拦截
 def ad_appLovin(apk_file_path):
     file_name = "AppLovinSdk.smali"
     find_command_str = " -name " + file_name
     init_str = ".method public static initializeSdk(Landroid\/content\/Context;Lcom\/applovin\/sdk\/AppLovinSdk$SdkInitializationListener;)V"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str)
 
-    insert_result = insert_log(apk_file_path, find_command_str, "Vungle   ---->  广告已被拦截")
-    if (insert_result == True):
-        print("[inject_ad] AppLovin广告拦截" + apk_file_path)
-        command_str = "sed -i '' 's/%s/%s/g' `grep '%s' -rl %s --include '%s'`" % (init_str, log_str, init_str, apk_file_path, file_name)
-        result = os.system(command_str)
-        tool.check_command(result)
-        print("[inject_ad] AppLovin初始化方法替换成打印方法")
-    else:
-        print("[inject_ad] AppLovinSdk.smail文件不存在")
+    file_name = "AppLovinFacade.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public static InitializeSdk(Landroid\/app\/Activity;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/unity\/AppLovinFacade;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
 
 
 # Admob 广告拦截
