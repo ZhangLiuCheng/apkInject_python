@@ -53,7 +53,7 @@
 
 ### 四. 去广告步骤
 
-​	目前去除的已知广告有IronSource, Admob, facebook, MoPub, AppLovinSdk, Vungle, amazon,后期在慢慢添加广告。
+​	目前去除的已知广告有IronSource, Admob, facebook, MoPub, AppLovinSdk, Vungle, Amazon, Chartboost后期在慢慢添加广告。
 
 #### 	1.IronSource
 
@@ -76,6 +76,14 @@
 #### 	4.AppLovin
 
 ​		AppLovinSdk.initializeSdk(context);
+
+​		AppLovinFacade.InitializeSdk
+
+​		AppLovinFacade.LoadNextAd
+
+​		AppLovinFacade.ShowAd	
+
+​		AppLovinFacade.ShowIncentInterstitial		
 
 > https://dash.applovin.com/docs/integration?signed_up=1#androidIntegration
 
@@ -114,6 +122,16 @@
 ### 	10.UnityAds
 
 ​		UnityAds.initialize(); UnityAds.show(); 
+
+
+
+### 11.GooglePlayService 弹窗
+
+```java
+GoogleApiAvailability.isGooglePlayServicesAvailable
+```
+
+> https://developers.google.com/android/guides/setup
 
 
 

@@ -253,10 +253,10 @@ def ad_mintegra(apk_file_path):
     find_command_str = ' -path "*/com/mintegral/msdk/system*"  -name ' + file_name
 
     # 方法1
-    init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    # init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
 
     # 方法2
-    # init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
 
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mintegral\/msdk\/system\/a;->playInLog()V" + "\\\n"
 
@@ -271,6 +271,21 @@ def ad_mintegra(apk_file_path):
         print("[inject_ad] Mintegral初始化方法替换失败, a.smail文件不存在")
 
 
+# Google Play Service  弹窗拦截
+def google_play_service(apk_file_path):
+    file_name = "GoogleApiAvailability.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public isGooglePlayServicesAvailable(Landroid\/content\/Context;)I"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/google\/android\/gms\/common\/GoogleApiAvailability;->playInLog()V" + "\\\n\\\n\\\tconst\/4 v0, 0x0\\\n" + "\\\n\\\n\\\treturn v0\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str)
+
+    file_name = "GoogleApiAvailability.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public isGooglePlayServicesAvailable(Landroid\/content\/Context;I)I"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/google\/android\/gms\/common\/GoogleApiAvailability;->playInLog()V" + "\\\n\\\n\\\tconst\/4 v0, 0x0\\\n" + "\\\n\\\n\\\treturn v0\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str)
+
+
 def hook_advert(apk_file_path):
     ad_unity(apk_file_path)
     ad_ironsource(apk_file_path)
@@ -282,6 +297,7 @@ def hook_advert(apk_file_path):
     ad_amazon(apk_file_path)
     ad_chartboost(apk_file_path)
     ad_mintegra(apk_file_path)
+    google_play_service(apk_file_path)
 
 
 def main():
