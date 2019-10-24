@@ -253,10 +253,10 @@ def ad_mintegra(apk_file_path):
     find_command_str = ' -path "*/com/mintegral/msdk/system*"  -name ' + file_name
 
     # 方法1
-    # init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
 
     # 方法2
-    init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    # init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
 
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mintegral\/msdk\/system\/a;->playInLog()V" + "\\\n"
 

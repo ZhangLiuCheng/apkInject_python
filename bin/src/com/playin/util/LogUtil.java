@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class LogUtil {
 
-    private static final String sTAG = "PLAYIN_AUDIO";
+    private static final String sTAG = "Hook_AD";
 
     public static boolean DEBUG = true;
 

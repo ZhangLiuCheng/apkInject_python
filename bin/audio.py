@@ -162,7 +162,7 @@ def hook_audio(apk_file_path):
     smali_dex()
     copy_libs_apk(apk_file_path)
     copy_smali_apk(apk_file_path)
-    modify_hook_java(apk_file_path)
+    # modify_hook_java(apk_file_path)
 
     app_package_name = tool.get_app_class(apk_file_path)
     print("[inject] 获取到Application对应的包名 " + app_package_name)

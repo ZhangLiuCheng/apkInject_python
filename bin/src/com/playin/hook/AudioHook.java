@@ -24,24 +24,29 @@ public class AudioHook {
     public static void init(Application application) {
         Log.e(TAG, "AudioHook     init   " + application);
 
-//        // apk
+
+        AutoContorl.start(application);
+        // 通过HoolJava方式获取音频，需要启动服务
+//        SocketConnect.getInstance().startServer();
+
+        // apk
 //        wayApk();
 
         // 注入
 //        wayInject(application.getBaseContext());
 
-        SocketConnect.getInstance().startServer();
-
-//        File file = application.getExternalFilesDir("audio");
-//        File f = new File(file, "helix_crush.pcm");
-//        if (!f.exists()) {
-//            try {
-//                f.createNewFile();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        SocketConnect.getInstance().setSaveFile(f);
+        /*
+        File file = application.getExternalFilesDir("audio");
+        File f = new File(file, "helix_crush.pcm");
+        if (!f.exists()) {
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        SocketConnect.getInstance().setSaveFile(f);
+         */
     }
 
     private static void wayApk() {
