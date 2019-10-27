@@ -4,25 +4,25 @@ import android.util.Log;
 
 public class LogUtil {
 
-    private static final String sTAG = "Hook_AD";
+    private static final String sTAG = "PLAY_INJECT";
 
     public static boolean DEBUG = true;
 
     public static void v(String message) {
         if (DEBUG) {
-            Log.v(sTAG, "[PlayInAudio] " + message);
+            Log.v(sTAG, "[PlayInJect] " + message);
         }
     }
 
     public static void i(String message) {
-        Log.i(sTAG, "[PlayInAudio] " + message);
+        Log.i(sTAG, "[PlayInJect] " + message);
     }
 
     public static void d(String message) {
-        Log.d(sTAG, "[PlayInAudio] " + message);
+        Log.d(sTAG, "[PlayInJect] " + message);
     }
 
     public static void e(String message) {
-        Log.e(sTAG, "[PlayInAudio] " + message);
+        Log.e(sTAG, "[PlayInJect] " + message);
     }
 }

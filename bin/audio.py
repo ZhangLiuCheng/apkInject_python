@@ -105,7 +105,7 @@ def modify_application_class(application_path):
             if flag:
                 count += 1
             if count >= 6:
-                inject_str = "    invoke-static {p0}, Lcom/playin/hook/AudioHook;->init(Landroid/app/Application;)V"
+                inject_str = "    invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V"
                 file_data += "\n" + inject_str + "\n"
                 flag = False
                 count = 0
@@ -130,7 +130,7 @@ def modify_application_class(application_path):
                 if flag:
                     count += 1
                 if count >= 7:
-                    inject_str = "    invoke-static {p0}, Lcom/playin/hook/AudioHook;->init(Landroid/app/Application;)V"
+                    inject_str = "    invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V"
                     file_data += "\n" + inject_str + "\n"
                     flag = False
                     count = 0
@@ -165,11 +165,23 @@ def hook_audio(apk_file_path):
     # modify_hook_java(apk_file_path)
 
     app_package_name = tool.get_app_class(apk_file_path)
-    print("[inject] 获取到Application对应的包名 " + app_package_name)
-    application_path = tool.find_application_path(apk_file_path, app_package_name)
-    if application_path:
-        modify_application_class(application_path)
+    if app_package_name != None:
+        print("[inject] 获取到Application对应的包名 " + app_package_name)
+        application_path = tool.find_application_path(apk_file_path, app_package_name)
+        if application_path:
+            modify_application_class(application_path)
+    else:
+        print("[inject] 获取到Application对应的包名失败 ")
 
+# application没有找到入口，就修改UnityPlayerActivity
+def modify_act_class(apk_file_path):
+    command_str = "find %s %s" % (apk_file_path, "UnityPlayerActivity.smali")
+    print(command_str)
+    dest_path = tool.exec_cmd(command_str)
+    if os.path.exists(dest_path):
+        print("[inject] UnityPlayerActivity.smali路径为 " + dest_path)
+    else:
+        print("[inject] UnityPlayerActivity.smali没有找到 ")
 
 def main():
     tool.create_temp_file()

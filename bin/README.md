@@ -147,3 +147,11 @@ return-void
 ```
 
 ​		
+
+### 2.Fastlane.apk
+
+​		UnityPlayerActivity onCreate添加
+
+```java
+invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/app/Activity;)V
+```
