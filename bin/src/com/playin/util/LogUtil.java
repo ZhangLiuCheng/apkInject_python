@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class LogUtil {
 
-    private static final String sTAG = "PLAY_INJECT";
+    private static final String sTAG = "PLAYIN";
 
     public static boolean DEBUG = true;
 
