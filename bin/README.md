@@ -153,5 +153,5 @@ return-void
 ​		UnityPlayerActivity onCreate添加
 
 ```java
-invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/app/Activity;)V
+invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
 ```

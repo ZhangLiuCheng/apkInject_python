@@ -9,6 +9,9 @@ import android.view.MotionEvent;
 import com.playin.util.LogUtil;
 import com.playin.util.SimilarImage;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -27,11 +30,16 @@ public class AutoContorl {
                     String meg = rootFile.exists() ? " 存在 " : "不存在";
                     LogUtil.e("============> " + meg + "  " + rootFile.getAbsolutePath());
                     if (!rootFile.exists()) return;
-                    List<String> ctrolStrs = getControlStrs(rootFile);
+                    JSONObject configObj = getControlStrs(rootFile);
+                    if (null == configObj) {
+                        LogUtil.e("============> 解析配置文件失败，请检查配置文件是否是标准的JSON格式");
+                        return;
+                    }
                     long startTime = System.currentTimeMillis();
-                    while (System.currentTimeMillis() - startTime <= 60000 * 2) {
-                        boolean result = processControl(context, rootFile, ctrolStrs);
+                    while (System.currentTimeMillis() - startTime <= configObj.optInt("duration")) {
+                        boolean result = processControl(context, rootFile, configObj);
                         if (result) break;
+                        Thread.sleep(configObj.optInt("interval"));
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -46,38 +54,51 @@ public class AutoContorl {
         return controlFile;
     }
 
-    private static List<String> getControlStrs(File rootFile) {
+    private static JSONObject getControlStrs(File rootFile) {
         try {
             File controlFile = new File(rootFile, "des.txt");
             if (!controlFile.exists()) return null;
-            List<String> strs = new ArrayList<>();
+            StringBuilder sb = new StringBuilder();
             BufferedReader br = new BufferedReader(new FileReader(controlFile));
             String line = br.readLine();
             while (null != line && !line.isEmpty()) {
-                strs.add(line);
+                sb.append(line);
                 line = br.readLine();
             }
-            return strs;
+            return new JSONObject(sb.toString());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
     }
 
-    private static boolean processControl(Context context, File rootFile, List<String> ctrolStrs) {
+    private static boolean processControl(Context context, File rootFile, JSONObject configObj) {
         try {
+            JSONObject gameScreenObj = configObj.optJSONObject("gameScreen");
             File capImgFile = screencap(context);
             if (capImgFile == null) return true;
-            for (int i = 0; i < ctrolStrs.size(); i++) {
-                String[] params = ctrolStrs.get(i).split("-");
-                String[] imgPro = params[0].split(":");
-                File oriImgFile = new File(rootFile, imgPro[0]);
+
+            // 比较是否进入游戏
+            if (null != gameScreenObj) {
+                File gameFile = new File(rootFile, gameScreenObj.optString("image"));
+                int gameResult = SimilarImage.compare(capImgFile, gameFile);
+                LogUtil.e("游戏页面比较结果:  " + gameScreenObj.optString("image") + " : " + gameResult);
+                if (gameResult < gameScreenObj.optInt("level")) {
+                    return gameScreenObj.optInt("interrupt") > 0 ? true : false;
+                }
+            }
+
+            // 比较控制点击
+            JSONArray ctrolArray = configObj.optJSONArray("controls");
+            for (int i = 0; i < ctrolArray.length(); i++) {
+                JSONObject ctrolObj = ctrolArray.optJSONObject(i);
+                File oriImgFile = new File(rootFile, ctrolObj.optString("image"));
                 int result = SimilarImage.compare(capImgFile, oriImgFile);
-                LogUtil.e("图片比较结果:  " + imgPro[0] + " : " + result);
-                if (result < Integer.parseInt(imgPro[1])) {
-                    String[] coord = params[1].split(":");
-                    perfomClick(Integer.parseInt(coord[0]), Integer.parseInt(coord[1]));
-                    if (Integer.parseInt(params[2]) > 0) {
+                LogUtil.e("控制图片比较结果:  " + ctrolObj.optString("image") + " : " + result);
+                if (result < ctrolObj.optInt("level")) {
+                    Thread.sleep(ctrolObj.optInt("delay"));
+                    perfomClick(ctrolObj.optInt("x"), ctrolObj.optInt("y"));
+                    if (ctrolObj.optInt("interrupt") > 0) {
                         return true;
                     }
                 }
@@ -106,7 +127,6 @@ public class AutoContorl {
 
     private static File screencap(Context context) {
         File file = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-//        File tmpImg = new File(file, "control_tmp" + System.currentTimeMillis() + ".jpeg");
         File tmpImg = new File(file, "tmp.jpeg");
         try {
             Process sh = Runtime.getRuntime().exec("su", null,null);

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # coding: UTF-8
+
 import advert
 import audio
 import tool
@@ -15,8 +16,8 @@ def main():
     else:
         apk_file_path = tool.apktool_d(apks_path[0])
 
-        advert.hook_advert(apk_file_path)
-        audio.hook_audio(apk_file_path)
+        # advert.hook_advert(apk_file_path)
+        # audio.hook_audio(apk_file_path)
 
         new_apk_path = tool.apktool_b(apk_file_path)
         new_apk_path = tool.sign_apk(new_apk_path)
