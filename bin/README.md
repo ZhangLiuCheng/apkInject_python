@@ -155,3 +155,14 @@ return-void
 ```java
 invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
 ```
+
+
+
+### 3.MrNinjaStar.apk
+
+​		UnityPlayerActivity onCreate添加
+
+```java
+invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
+```
+

@@ -160,7 +160,7 @@ def hook_audio(apk_file_path):
     javac_class()
     dex_class()
     smali_dex()
-    copy_libs_apk(apk_file_path)
+    # copy_libs_apk(apk_file_path)
     copy_smali_apk(apk_file_path)
     # modify_hook_java(apk_file_path)
 

@@ -185,6 +185,54 @@ def ad_appLovin(apk_file_path):
     ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
 
 
+    file_name = "AppLovinAdServiceImpl.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public loadNextAd(Lcom\/applovin\/sdk\/AppLovinAdSize;Lcom\/applovin\/sdk\/AppLovinAdLoadListener;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
+    file_name = "AppLovinAdServiceImpl.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public loadNextAd(Ljava\/lang\/String;Lcom\/applovin\/sdk\/AppLovinAdSize;Lcom\/applovin\/sdk\/AppLovinAdLoadListener;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
+    file_name = "AppLovinAdServiceImpl.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public loadNextAdForAdToken(Ljava\/lang\/String;Lcom\/applovin\/sdk\/AppLovinAdLoadListener;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
+    file_name = "AppLovinAdServiceImpl.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public preloadAdForZoneId(Ljava\/lang\/String;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
+    file_name = "AppLovinAdServiceImpl.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public preloadAds(Lcom\/applovin\/impl\/sdk\/ad\/d;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
+    file_name = "AppLovinAdServiceImpl.smali"
+    find_command_str = " -name " + file_name
+    init_str = ".method public preloadAd(Lcom\/applovin\/sdk\/AppLovinAdSize;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
+    file_name = "l.smali"
+    find_command_str = " -name " + file_name + " | xargs grep -l " + "showAndRender"
+    init_str = ".method public showAndRender(Lcom\/applovin\/sdk\/AppLovinAd;Ljava\/lang\/String;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
+    file_name = "l.smali"
+    find_command_str = " -name " + file_name + " | xargs grep -l " + "showAndRender"
+    init_str = ".method public showAndRender(Lcom\/applovin\/sdk\/AppLovinAd;)V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/applovin\/sdk\/AppLovinSdk;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
+
 
 # Admob 广告拦截
 def ad_admob(apk_file_path):
@@ -283,7 +331,7 @@ def google_play_service(apk_file_path):
     find_command_str = " -name " + file_name
     init_str = ".method public isGooglePlayServicesAvailable(Landroid\/content\/Context;I)I"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/google\/android\/gms\/common\/GoogleApiAvailability;->playInLog()V" + "\\\n\\\n\\\tconst\/4 v0, 0x0\\\n" + "\\\n\\\n\\\treturn v0\\\n"
-    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str)
+    ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
 
 
 def hook_advert(apk_file_path):
