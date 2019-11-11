@@ -15,9 +15,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AutoContorl {
 
@@ -25,20 +24,24 @@ public class AutoContorl {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                updateStatus(context, "PREPARE");
                 try {
-                    File rootFile = getControlFile(context);
+                    File rootFile = new File(getSaveFile(context), "control");
                     String meg = rootFile.exists() ? " 存在 " : "不存在";
-                    LogUtil.e("============> " + meg + "  " + rootFile.getAbsolutePath());
+                    LogUtil.e("========> " + meg + "  " + rootFile.getAbsolutePath());
                     if (!rootFile.exists()) return;
                     JSONObject configObj = getControlStrs(rootFile);
                     if (null == configObj) {
-                        LogUtil.e("============> 解析配置文件失败，请检查配置文件是否是标准的JSON格式");
+                        LogUtil.e("========>  解析配置文件失败，请检查配置文件是否是标准的JSON格式");
                         return;
                     }
                     long startTime = System.currentTimeMillis();
                     while (System.currentTimeMillis() - startTime <= configObj.optInt("duration")) {
                         boolean result = processControl(context, rootFile, configObj);
-                        if (result) break;
+                        if (result) {
+                            updateStatus(context, "READY");
+                            break;
+                        }
                         Thread.sleep(configObj.optInt("interval"));
                     }
                 } catch (Exception ex) {
@@ -48,10 +51,32 @@ public class AutoContorl {
         }).start();
     }
 
-    private static File getControlFile(Context context) {
-        File file = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-        File controlFile = new File(file, "control");
-        return controlFile;
+    /**
+     * @param status "PREPARE" or "READY",
+     */
+    private static void updateStatus(Context context, String status) {
+        LogUtil.e("========>  当前包名 " + context.getPackageName());
+
+        File statusFile = new File(context.getFilesDir(), "STATUS");
+        try {
+            if (!statusFile.exists()) {
+                statusFile.createNewFile();
+            }
+            JSONObject obj = new JSONObject();
+            obj.put("game", context.getPackageName());
+            obj.put("status", status);
+            obj.put("timestamp", System.currentTimeMillis());
+            FileWriter fileWriter = new FileWriter(statusFile, false);
+            fileWriter.write(obj.toString());
+            fileWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.e("========>  更新状态失败 " + e.toString());
+        }
+    }
+
+    private static File getSaveFile(Context context) {
+        return context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
     }
 
     private static JSONObject getControlStrs(File rootFile) {
@@ -74,17 +99,22 @@ public class AutoContorl {
 
     private static boolean processControl(Context context, File rootFile, JSONObject configObj) {
         try {
-            JSONObject gameScreenObj = configObj.optJSONObject("gameScreen");
             File capImgFile = screencap(context);
             if (capImgFile == null) return true;
 
+            JSONArray gameScreenArray = configObj.optJSONArray("gameScreens");
             // 比较是否进入游戏
-            if (null != gameScreenObj) {
-                File gameFile = new File(rootFile, gameScreenObj.optString("image"));
-                int gameResult = SimilarImage.compare(capImgFile, gameFile);
-                LogUtil.e("游戏页面比较结果:  " + gameScreenObj.optString("image") + " : " + gameResult);
-                if (gameResult < gameScreenObj.optInt("level")) {
-                    return gameScreenObj.optInt("interrupt") > 0 ? true : false;
+            if (null != gameScreenArray) {
+                for (int i = 0; i < gameScreenArray.length(); i++) {
+                    JSONObject gameScreenObj = gameScreenArray.optJSONObject(i);
+                    File gameFile = new File(rootFile, gameScreenObj.optString("image"));
+                    int gameResult = SimilarImage.compare(capImgFile, gameFile);
+                    LogUtil.e("========>  游戏页面比较结果:  " + gameScreenObj.optString("image") + " : " + gameResult);
+                    if (gameResult < gameScreenObj.optInt("level")) {
+                        if (gameScreenObj.optInt("interrupt") > 0) {
+                            return true;
+                        }
+                    }
                 }
             }
 
@@ -94,7 +124,7 @@ public class AutoContorl {
                 JSONObject ctrolObj = ctrolArray.optJSONObject(i);
                 File oriImgFile = new File(rootFile, ctrolObj.optString("image"));
                 int result = SimilarImage.compare(capImgFile, oriImgFile);
-                LogUtil.e("控制图片比较结果:  " + ctrolObj.optString("image") + " : " + result);
+                LogUtil.e("========>  控制图片比较结果:  " + ctrolObj.optString("image") + " : " + result);
                 if (result < ctrolObj.optInt("level")) {
                     Thread.sleep(ctrolObj.optInt("delay"));
                     perfomClick(ctrolObj.optInt("x"), ctrolObj.optInt("y"));
@@ -112,7 +142,7 @@ public class AutoContorl {
     private static void perfomClick(int offetX, int offetY) {
         try {
             Instrumentation inst = new Instrumentation();
-            LogUtil.e("perfomClick ========>    offetX: " + offetX + "  offetY: " + offetY);
+            LogUtil.e("========>  perfomClick  offetX: " + offetX + "  offetY: " + offetY);
             MotionEvent event = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
                     MotionEvent.ACTION_DOWN, offetX, offetY, 0);
             inst.sendPointerSync(event);
@@ -126,8 +156,7 @@ public class AutoContorl {
     }
 
     private static File screencap(Context context) {
-        File file = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-        File tmpImg = new File(file, "tmp.jpeg");
+        File tmpImg = new File(getSaveFile(context), "tmp.jpeg");
         try {
             Process sh = Runtime.getRuntime().exec("su", null,null);
             OutputStream os = sh.getOutputStream();
@@ -137,7 +166,7 @@ public class AutoContorl {
             sh.waitFor();
         } catch (Exception e) {
             e.printStackTrace();
-            LogUtil.e(" ========>  截图失败");
+            LogUtil.e("========>  截图失败");
             return null;
         }
         LogUtil.e(" ========>  截图成功 " + tmpImg.getAbsolutePath());
