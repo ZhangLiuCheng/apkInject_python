@@ -166,3 +166,12 @@ invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;
 invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
 ```
 
+### 4.MagicTiles3.apk
+
+​		MultiDexApplication attachBaseContext去掉
+
+​		UnityPlayerActivity2 onCreate添加
+
+```java
+invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
+```
