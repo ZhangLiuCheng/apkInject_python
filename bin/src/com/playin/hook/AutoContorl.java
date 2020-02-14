@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AutoContorl {
 
@@ -25,6 +27,7 @@ public class AutoContorl {
             @Override
             public void run() {
                 updateStatus(context, "PREPARE");
+                setPlayInVersion(context);
                 try {
                     File rootFile = new File(getSaveFile(context), "control");
                     String meg = rootFile.exists() ? " 存在 " : "不存在";
@@ -72,6 +75,26 @@ public class AutoContorl {
         } catch (Exception e) {
             e.printStackTrace();
             LogUtil.e("========>  更新状态失败 " + e.toString());
+        }
+    }
+
+    private static void setPlayInVersion(Context context) {
+        File statusFile = new File(context.getFilesDir(), "VERSION");
+        try {
+            if (!statusFile.exists()) {
+                statusFile.createNewFile();
+            }
+            SimpleDateFormat sdf =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" );
+            String dateStr = sdf.format(new Date());
+            JSONObject obj = new JSONObject();
+            obj.put("packageName", context.getPackageName());
+            obj.put("version", "1");
+            obj.put("date", dateStr);
+            FileWriter fileWriter = new FileWriter(statusFile, false);
+            fileWriter.write(obj.toString());
+            fileWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
