@@ -99,6 +99,13 @@ public class AutoContorl {
     }
 
     private static File getSaveFile(Context context) {
+        File rootFile = new File("/sdcard/playin/" + context.getPackageName());
+        LogUtil.e("----------------- 获取control路径 ----------------------  结束：" + rootFile.getAbsolutePath());
+        return rootFile;
+    }
+
+
+    private static File getTmpImageFile(Context context) {
         return context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
     }
 
@@ -179,7 +186,7 @@ public class AutoContorl {
     }
 
     private static File screencap(Context context) {
-        File tmpImg = new File(getSaveFile(context), "tmp.jpeg");
+        File tmpImg = new File(getTmpImageFile(context), "tmp.jpeg");
         try {
             Process sh = Runtime.getRuntime().exec("su", null,null);
             OutputStream os = sh.getOutputStream();
