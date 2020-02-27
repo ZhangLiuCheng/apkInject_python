@@ -23,6 +23,8 @@ import java.util.Date;
 public class AutoContorl {
 
     public static void start(final Context context) {
+        LogUtil.e("当前包名  --------------> " + context.getPackageName());
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -30,7 +32,7 @@ public class AutoContorl {
                 setPlayInVersion(context);
                 try {
                     File rootFile = new File(getSaveFile(context), "control");
-                    String meg = rootFile.exists() ? " 存在 " : "不存在";
+                    String meg = rootFile.exists() ? "控制文件存在 " : "控制文件不存在";
                     LogUtil.e("========> " + meg + "  " + rootFile.getAbsolutePath());
                     if (!rootFile.exists()) return;
                     JSONObject configObj = getControlStrs(rootFile);
@@ -58,8 +60,6 @@ public class AutoContorl {
      * @param status "PREPARE" or "READY",
      */
     private static void updateStatus(Context context, String status) {
-        LogUtil.e("========>  当前包名 " + context.getPackageName());
-
         File statusFile = new File(context.getFilesDir(), "STATUS");
         try {
             if (!statusFile.exists()) {
@@ -130,7 +130,7 @@ public class AutoContorl {
     private static boolean processControl(Context context, File rootFile, JSONObject configObj) {
         try {
             File capImgFile = screencap(context);
-            if (capImgFile == null) return true;
+            if (capImgFile == null || !capImgFile.exists()) return false;
 
             JSONArray gameScreenArray = configObj.optJSONArray("gameScreens");
             // 比较是否进入游戏

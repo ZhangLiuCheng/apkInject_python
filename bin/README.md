@@ -202,3 +202,16 @@ invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;
 	return v0
 .end method
 ```
+
+​	 
+
+  3.添加自动点击
+
+​		UnityPlayerActivity onCreate添加
+
+```java
+invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
+```
+
+
+
