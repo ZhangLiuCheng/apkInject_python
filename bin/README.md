@@ -175,3 +175,30 @@ invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;
 ```java
 invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
 ```
+
+
+
+### 5.弓箭传说
+
+​		1.去掉签名验证，防止重新打包后无法运行 ,修改SignCheck.smali里方法
+
+```java
+.method public check()Z
+    .locals 1
+    invoke-static {}, Lcom/habby/archero/SignCheck;->playInLog()V
+    const/4 v0, 0x1
+    return v0
+.end method
+```
+
+​		
+
+​		2.去掉GooglePlay验证，修改UnityPlayerActivity方法替换
+
+```java
+.method public is_gp_avalible()Z
+  .locals 1
+	const/4 v0, 0x0
+	return v0
+.end method
+```

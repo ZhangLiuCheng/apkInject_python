@@ -173,56 +173,9 @@
 
 # virtual methods
 .method public check()Z
-    .locals 2
-
-    .line 142
-    iget-object v0, p0, Lcom/habby/archero/SignCheck;->realCer:Ljava/lang/String;
-
-    if-eqz v0, :cond_0
-
-    .line 143
-    iget-object v0, p0, Lcom/habby/archero/SignCheck;->cer:Ljava/lang/String;
-
-    invoke-virtual {v0}, Ljava/lang/String;->trim()Ljava/lang/String;
-
-    move-result-object v0
-
-    iput-object v0, p0, Lcom/habby/archero/SignCheck;->cer:Ljava/lang/String;
-
-    .line 144
-    iget-object v0, p0, Lcom/habby/archero/SignCheck;->realCer:Ljava/lang/String;
-
-    invoke-virtual {v0}, Ljava/lang/String;->trim()Ljava/lang/String;
-
-    move-result-object v0
-
-    iput-object v0, p0, Lcom/habby/archero/SignCheck;->realCer:Ljava/lang/String;
-
-    .line 145
-    iget-object v0, p0, Lcom/habby/archero/SignCheck;->cer:Ljava/lang/String;
-
-    iget-object v1, p0, Lcom/habby/archero/SignCheck;->realCer:Ljava/lang/String;
-
-    invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-
-    move-result v0
-
-    if-eqz v0, :cond_1
+    .locals 1
 
     const/4 v0, 0x1
-
-    return v0
-
-    :cond_0
-    const-string v0, "SignCheck"
-
-    const-string v1, "\u03b4\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u02b5\ufffd\ufffd\u01e9\ufffd\ufffd SHA-1 \u05b5"
-
-    .line 149
-    invoke-static {v0, v1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
-
-    :cond_1
-    const/4 v0, 0x0
 
     return v0
 .end method
