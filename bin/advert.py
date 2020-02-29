@@ -141,8 +141,8 @@ def ad_mopub(apk_file_path):
 def ad_vungle(apk_file_path):
     file_name = "Vungle.smali"
     find_command_str = " -name " + file_name
-    init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/VungleSettings;)V"
-    # init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/PublisherDirectDownload;)V"
+    # init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/VungleSettings;)V"
+    init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/PublisherDirectDownload;)V"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/vungle\/warren\/Vungle;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
     insert_result = insert_log(apk_file_path, find_command_str, "Vungle   ---->  广告已被拦截")
@@ -301,10 +301,10 @@ def ad_mintegra(apk_file_path):
     find_command_str = ' -path "*/com/mintegral/msdk/system*"  -name ' + file_name
 
     # 方法1
-    init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    # init_str = "invoke-virtual {v0, v1, p1}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
 
     # 方法2
-    # init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
+    init_str = "invoke-virtual {v0, v1, v2}, Lcom\/mintegral\/msdk\/base\/controller\/b;->a(Ljava\/util\/Map;Landroid\/content\/Context;)V"
 
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mintegral\/msdk\/system\/a;->playInLog()V" + "\\\n"
 

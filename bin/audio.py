@@ -167,9 +167,9 @@ def hook_audio(apk_file_path):
     app_package_name = tool.get_app_class(apk_file_path)
     if app_package_name != None:
         print("[inject] 获取到Application对应的包名 " + app_package_name)
-        application_path = tool.find_application_path(apk_file_path, app_package_name)
-        if application_path:
-            modify_application_class(application_path)
+        # application_path = tool.find_application_path(apk_file_path, app_package_name)
+        # if application_path:
+        #     modify_application_class(application_path)
     else:
         print("[inject] 获取到Application对应的包名失败 ")
 

@@ -16,10 +16,14 @@ def main():
     else:
         apk_file_path = tool.apktool_d(apks_path[0])
 
+        #AndroidMainfest.xml 手动更添加下面代码
         #<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
-        # advert.hook_advert(apk_file_path)
-        # audio.hook_audio(apk_file_path)
+        # 自动注入代码有问题，手动添加下面代码
+        #invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
+
+        advert.hook_advert(apk_file_path)
+        audio.hook_audio(apk_file_path)
 
         new_apk_path = tool.apktool_b(apk_file_path)
         new_apk_path = tool.sign_apk(new_apk_path)
