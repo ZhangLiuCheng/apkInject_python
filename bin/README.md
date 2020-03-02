@@ -215,3 +215,13 @@ invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;
 
 
 
+### 5.tofu_girl
+
+​	1.去除自定义广告
+
+```java
+.method public init(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+    return-void
+.end method
+```
+

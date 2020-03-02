@@ -18,16 +18,22 @@ def main():
 
         #AndroidMainfest.xml 手动更添加下面代码
         #<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+        #<uses-permission android:name="android.permission.CALL_PHONE"/>
 
         # 自动注入代码有问题，手动添加下面代码
         #invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
 
-        advert.hook_advert(apk_file_path)
-        audio.hook_audio(apk_file_path)
+        # advert.hook_advert(apk_file_path)
+        # audio.hook_audio(apk_file_path)
 
         new_apk_path = tool.apktool_b(apk_file_path)
         new_apk_path = tool.sign_apk(new_apk_path)
         print("[inject] 签名成功，路径为: " + new_apk_path)
+
+
+        #pm clear com.joypac.jpescape
+        #pm grant com.joypac.jpescape android.permission.READ_EXTERNAL_STORAGE
+        #pm grant com.joypac.jpescape android.permission.CALL_PHONE
 
 
 main()
