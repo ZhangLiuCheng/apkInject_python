@@ -2,7 +2,7 @@
 # coding: UTF-8
 
 import advert
-import audio
+import code
 import tool
 
 
@@ -23,8 +23,8 @@ def main():
         # 自动注入代码有问题，手动添加下面代码
         #invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V
 
-        # advert.hook_advert(apk_file_path)
-        # audio.hook_audio(apk_file_path)
+        advert.hook(apk_file_path)
+        code.process(apk_file_path)
 
         new_apk_path = tool.apktool_b(apk_file_path)
         new_apk_path = tool.sign_apk(new_apk_path)

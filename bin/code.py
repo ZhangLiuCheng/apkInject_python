@@ -147,6 +147,39 @@ def modify_application_class(application_path):
         print("[inject] Application 注入方法失败")
         tool.check_command(-1)
 
+# 修改mainactivity,里面调用注入的方法
+def modify_main_activity_class(main_activity_path):
+    print("[inject] main_activity_path准备添加自定义方法调用")
+    injectResult = False
+    file_data = ""
+    # 查找onCreate方法
+    with open(main_activity_path, "r") as f:
+        flag = False
+        count = 0
+        for line in f:
+            if ".method protected onCreate(Landroid/os/Bundle;)V" in line:
+                print("[inject] MainActivity 定位到onCreate方法")
+                flag = True
+                injectResult = True
+            if flag:
+                count += 1
+            if count >= 9:
+                inject_str = "    invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V"
+                file_data += "\n" + inject_str + "\n"
+                flag = False
+                count = 0
+            file_data += line
+    f.close()
+    if (injectResult):
+        with open(main_activity_path, "w") as f:
+            f.write(file_data)
+        f.close()
+
+    if (injectResult):
+        print("[inject] MainActivity 注入方法成功")
+    else:
+        print("[inject] MainActivity 注入方法失败")
+        tool.check_command(-1)
 
 def modify_hook_java(apk_file_path):
     print("[inject] 修改hook java音频代码 " + apk_file_path)
@@ -155,7 +188,7 @@ def modify_hook_java(apk_file_path):
     tool.check_command(result)
 
 
-def hook_audio(apk_file_path):
+def process(apk_file_path):
     src_java_path()
     javac_class()
     dex_class()
@@ -164,24 +197,37 @@ def hook_audio(apk_file_path):
     copy_smali_apk(apk_file_path)
     # modify_hook_java(apk_file_path)
 
-    app_package_name = tool.get_app_class(apk_file_path)
-    if app_package_name != None:
-        print("[inject] 获取到Application对应的包名 " + app_package_name)
-        # application_path = tool.find_application_path(apk_file_path, app_package_name)
-        # if application_path:
-        #     modify_application_class(application_path)
-    else:
-        print("[inject] 获取到Application对应的包名失败 ")
+    # application 注入方法调用
+    # app_package_name = tool.get_app_class(apk_file_path)
+    # if app_package_name != None:
+    #     print("[inject] 获取到Application对应的包名 " + app_package_name)
+    #     application_path = tool.find_application_path(apk_file_path, app_package_name)
+    #     if application_path:
+    #         modify_application_class(application_path)
+    # else:
+    #     print("[inject] 获取到Application对应的包名失败 ")
+
+    # mainActivity里面注入入口方法调用
+    main_activity_class = tool.find_main_activity_class(apk_file_path)
+    main_activity_path = tool.find_main_activity_path(apk_file_path, main_activity_class)
+    modify_main_activity_class(main_activity_path)
+    # application 添加权限
+    tool.inject_application_permission(apk_file_path)
+
+
+
 
 # application没有找到入口，就修改UnityPlayerActivity
-def modify_act_class(apk_file_path):
-    command_str = "find %s %s" % (apk_file_path, "UnityPlayerActivity.smali")
-    print(command_str)
-    dest_path = tool.exec_cmd(command_str)
-    if os.path.exists(dest_path):
-        print("[inject] UnityPlayerActivity.smali路径为 " + dest_path)
-    else:
-        print("[inject] UnityPlayerActivity.smali没有找到 ")
+# def modify_act_class(apk_file_path):
+#     command_str = "find %s %s" % (apk_file_path, "UnityPlayerActivity.smali")
+#     print(command_str)
+#     dest_path = tool.exec_cmd(command_str)
+#     if os.path.exists(dest_path):
+#         print("[inject] UnityPlayerActivity.smali路径为 " + dest_path)
+#     else:
+#         print("[inject] UnityPlayerActivity.smali没有找到 ")
+
+
 
 def main():
     tool.create_temp_file()
@@ -193,11 +239,16 @@ def main():
     else:
         apk_file_path = tool.apktool_d(apks_path[0])
 
-        hook_audio(apk_file_path)
+        main_activity_class = tool.find_main_activity_class(apk_file_path)
+        main_activity_path = tool.find_main_activity_path(apk_file_path, main_activity_class)
+        modify_main_activity_class(main_activity_path)
+        tool.inject_application_permission(apk_file_path)
 
-        new_apk_path = tool.apktool_b(apk_file_path)
-        new_apk_path = tool.sign_apk(new_apk_path)
-        print("[inject] 签名成功，路径为: " + new_apk_path)
+        # hook_audio(apk_file_path)
+        #
+        # new_apk_path = tool.apktool_b(apk_file_path)
+        # new_apk_path = tool.sign_apk(new_apk_path)
+        # print("[inject] 签名成功，路径为: " + new_apk_path)
 
 
 # main()

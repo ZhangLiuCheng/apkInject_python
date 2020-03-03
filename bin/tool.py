@@ -4,6 +4,8 @@ import xml.etree.ElementTree as ET
 import os
 import time
 
+from xml.dom.minidom import parse
+
 
 # 获取application对应的文件
 def get_app_class(apk_file_path):
@@ -37,6 +39,66 @@ def find_application_path(apk_file_path, app_class_name):
         print("[inject] 查找Application失败，请人工核实")
         return None
 
+# 查找MainActivity所在的class
+def find_main_activity_class(apk_file_path):
+    manifest = apk_file_path + "/AndroidManifest.xml";
+    domTree = parse(manifest)
+    rootNode = domTree.documentElement
+    activitys = rootNode.getElementsByTagName("activity")
+    mainAct = None
+
+    for act in activitys:
+        intentFilters = act.getElementsByTagName("intent-filter")
+        if mainAct:
+            break
+        if intentFilters:
+            for filter in intentFilters:
+                action = filter.getElementsByTagName("action")[0]
+                if action:
+                    # print("action: ", action.getAttribute("android:name"))
+                    if "android.intent.action.MAIN" == action.getAttribute("android:name"):
+                        mainAct = act
+                        break
+
+    return mainAct.getAttribute("android:name")
+
+# AndroidMainfest里面注入权限
+def inject_application_permission(apk_file_path):
+    manifest = apk_file_path + "/AndroidManifest.xml"
+    domTree = parse(manifest)
+    rootNode = domTree.documentElement
+    # sdcard权限
+    storage_node = domTree.createElement("uses-permission")
+    storage_node.setAttribute("android:name", "android.permission.READ_EXTERNAL_STORAGE")
+    rootNode.appendChild(storage_node)
+    #打电话权限
+    call_node = domTree.createElement("uses-permission")
+    call_node.setAttribute("android:name", "android.permission.CALL_PHONE")
+    rootNode.appendChild(call_node)
+    with open(manifest, 'w') as f:
+        # 缩进 - 换行 - 编码
+        domTree.writexml(f, addindent='  ', encoding='utf-8')
+
+
+# 查找main_activity所在路径
+def find_main_activity_path(apk_file_path, activity_class_name):
+    main_activity_path = activity_class_name.replace(".", "/")
+
+    print("[inject] 开始查找MainActivity所在路径")
+    apk_smali = apk_file_path + "/smali/" + main_activity_path
+    c2 = apk_file_path + "/smali_classes2/" + main_activity_path + ".smali"
+    c3 = apk_file_path + "/smali_classes3/" + main_activity_path + ".smali"
+    c4 = apk_file_path + "/smali_classes4/" + main_activity_path + ".smali"
+    c5 = apk_file_path + "/smali_classes5/" + main_activity_path + ".smali"
+    if (os.path.exists(c2)):
+        apk_smali = c2
+    if (os.path.exists(c3)):
+        apk_smali = c3
+    if (os.path.exists(c4)):
+        apk_smali = c4
+    if (os.path.exists(c5)):
+        apk_smali = c5
+    return apk_smali
 
 # 创建临时文件
 def create_temp_file():

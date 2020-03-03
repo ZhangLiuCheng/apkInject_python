@@ -334,7 +334,7 @@ def google_play_service(apk_file_path):
     ad_replace(apk_file_path, file_name, find_command_str, init_str, log_str, False)
 
 
-def hook_advert(apk_file_path):
+def hook(apk_file_path):
     ad_unity(apk_file_path)
     ad_ironsource(apk_file_path)
     ad_facebook(apk_file_path)
@@ -359,7 +359,7 @@ def main():
     else:
         apk_file_path = tool.apktool_d(apks_path[0])
 
-        hook_advert(apk_file_path)
+        hook(apk_file_path)
 
         new_apk_path = tool.apktool_b(apk_file_path)
         new_apk_path = tool.sign_apk(new_apk_path)
