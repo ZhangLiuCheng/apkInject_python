@@ -1,6 +1,5 @@
-temp
-venv
 *.apk
+temp
 .idea
 *.DS_Store
 
