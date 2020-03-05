@@ -124,7 +124,7 @@ def ad_mopub(apk_file_path):
     file_name = "MoPub.smali"
     find_command_str = " -name " + file_name
     init_str = "invoke-virtual {p2, p0, v0, v1, p1}, Lcom\/mopub\/common\/AdapterConfigurationManager;->initialize(Landroid\/content\/Context;Ljava\/util\/Set;Ljava\/util\/Map;Ljava\/util\/Map;)V"
-    log_str = "invoke-static {}, Lcom\/mopub\/common\/MoPub;->playInLog()V"
+    log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/mopub\/common\/MoPub;->playInLog()V"
 
     insert_result = insert_log(apk_file_path, find_command_str, "MoPub   ---->  广告已被拦截")
     if (insert_result == True):
@@ -141,8 +141,8 @@ def ad_mopub(apk_file_path):
 def ad_vungle(apk_file_path):
     file_name = "Vungle.smali"
     find_command_str = " -name " + file_name
-    # init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/VungleSettings;)V"
-    init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/PublisherDirectDownload;)V"
+    init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/VungleSettings;)V"
+    # init_str = ".method public static init(Ljava\/lang\/String;Landroid\/content\/Context;Lcom\/vungle\/warren\/InitCallback;Lcom\/vungle\/warren\/PublisherDirectDownload;)V"
     log_str = init_str + "\\\n\\\t" + "invoke-static {}, Lcom\/vungle\/warren\/Vungle;->playInLog()V" + "\\\n\\\n\\\treturn-void\\\n"
 
     insert_result = insert_log(apk_file_path, find_command_str, "Vungle   ---->  广告已被拦截")

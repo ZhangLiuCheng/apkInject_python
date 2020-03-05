@@ -30,6 +30,13 @@ def main():
         new_apk_path = tool.sign_apk(new_apk_path)
         print("[inject] 签名成功，路径为: " + new_apk_path)
 
+        #pm clear com.habby.archero
+        #pm grant com.habby.archero android.permission.READ_EXTERNAL_STORAGE
+
+        #cat /data/system/packages.xml | grep grep com.habby.archero
+
+        #iptables -I OUTPUT -m owner --uid-owner 10141 -p tcp -j DROP
+        #iptables -I OUTPUT -m owner --uid-owner 10141 -p udp -j DROP
 
         #pm clear com.joypac.jpescape
         #pm grant com.joypac.jpescape android.permission.READ_EXTERNAL_STORAGE

@@ -49,6 +49,7 @@ public class AutoContorl {
                         }
                         Thread.sleep(configObj.optInt("interval"));
                     }
+                    updateStatus(context, "READY");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -150,16 +151,18 @@ public class AutoContorl {
 
             // 比较控制点击
             JSONArray ctrolArray = configObj.optJSONArray("controls");
-            for (int i = 0; i < ctrolArray.length(); i++) {
-                JSONObject ctrolObj = ctrolArray.optJSONObject(i);
-                File oriImgFile = new File(rootFile, ctrolObj.optString("image"));
-                int result = SimilarImage.compare(capImgFile, oriImgFile);
-                LogUtil.e("========>  控制图片比较结果:  " + ctrolObj.optString("image") + " : " + result);
-                if (result < ctrolObj.optInt("level")) {
-                    Thread.sleep(ctrolObj.optInt("delay"));
-                    perfomClick(ctrolObj.optInt("x"), ctrolObj.optInt("y"));
-                    if (ctrolObj.optInt("interrupt") > 0) {
-                        return true;
+            if (null != ctrolArray) {
+                for (int i = 0; i < ctrolArray.length(); i++) {
+                    JSONObject ctrolObj = ctrolArray.optJSONObject(i);
+                    File oriImgFile = new File(rootFile, ctrolObj.optString("image"));
+                    int result = SimilarImage.compare(capImgFile, oriImgFile);
+                    LogUtil.e("========>  控制图片比较结果:  " + ctrolObj.optString("image") + " : " + result);
+                    if (result < ctrolObj.optInt("level")) {
+                        Thread.sleep(ctrolObj.optInt("delay"));
+                        perfomClick(ctrolObj.optInt("x"), ctrolObj.optInt("y"));
+                        if (ctrolObj.optInt("interrupt") > 0) {
+                            return true;
+                        }
                     }
                 }
             }

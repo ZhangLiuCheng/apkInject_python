@@ -163,7 +163,7 @@ def modify_main_activity_class(main_activity_path):
                 injectResult = True
             if flag:
                 count += 1
-            if count >= 9:
+            if count >= 12:
                 inject_str = "    invoke-static {p0}, Lcom/playin/hook/PlayInject;->init(Landroid/content/Context;)V"
                 file_data += "\n" + inject_str + "\n"
                 flag = False
